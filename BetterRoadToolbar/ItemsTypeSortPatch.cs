@@ -38,14 +38,6 @@ namespace BetterRoadToolbar
                 return ToComparisonInt(firstLaneCount < secondLaneCount);
             }
 
-            uint firstAuxiliaryLaneCount = RoadAnalyser.GetAuxiliaryLaneCount(first);
-            uint secondAuxiliaryLaneCount = RoadAnalyser.GetAuxiliaryLaneCount(second);
-
-            if (firstAuxiliaryLaneCount != secondAuxiliaryLaneCount)
-            {
-                return ToComparisonInt(firstAuxiliaryLaneCount < secondAuxiliaryLaneCount);
-            }
-
             bool firstTwoWay = RoadAnalyser.IsTwoWay(first);
             bool secondTwoWay = RoadAnalyser.IsTwoWay(second);
 
@@ -102,9 +94,25 @@ namespace BetterRoadToolbar
                 return ToComparisonInt(secondHasBikeLanes);
             }
 
+            float firstNoise = (first.m_netAI as RoadBaseAI).m_noiseAccumulation;
+            float secondNoise = (second.m_netAI as RoadBaseAI).m_noiseAccumulation;
+
+            if (firstNoise != secondNoise)
+            {
+                return ToComparisonInt(firstNoise > secondNoise); // pavement before grass before trees / no sound barriers before sound barriers
+            }
+
             if (first.m_hasParkingSpaces != second.m_hasParkingSpaces)
             {
                 return ToComparisonInt(second.m_hasParkingSpaces); // no parking before parking
+            }
+
+            uint firstAuxiliaryLaneCount = RoadAnalyser.GetAuxiliaryLaneCount(first);
+            uint secondAuxiliaryLaneCount = RoadAnalyser.GetAuxiliaryLaneCount(second);
+
+            if (firstAuxiliaryLaneCount != secondAuxiliaryLaneCount)
+            {
+                return ToComparisonInt(firstAuxiliaryLaneCount < secondAuxiliaryLaneCount); // fewer bike lanes/parking lanes before more
             }
 
             if (first.m_UIPriority != second.m_UIPriority)

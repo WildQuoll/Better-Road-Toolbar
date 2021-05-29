@@ -21,10 +21,20 @@ namespace BetterRoadToolbar
 				return;
             }
 
-			var roadType = RoadAnalyser.GetRoadCategory(info);
-			var group = RoadAnalyser.CreateGroup(roadType);
+			var cats = RoadAnalyser.GetRoadCategories(info);
 
-			__result = (group.name == ___m_Category);
+			foreach (var cat in cats)
+			{
+				var group = RoadAnalyser.CreateGroup(cat);
+
+				if (group.name == ___m_Category)
+                {
+					__result = true;
+					return;
+                }
+			}
+
+			__result = false;
 		}
 	}
 }

@@ -16,7 +16,13 @@ namespace BetterRoadToolbar
 		Urban_4U_5LMin,
 		Urban_5UMin,
 		Rural,
-		Highway
+		Highway,
+
+		Bike,
+		Bus,
+		Tram,
+		Trolleybus,
+		Monorail
 	}
 
 	class RoadAnalyser
@@ -43,22 +49,21 @@ namespace BetterRoadToolbar
 					return "Rural";
 				case RoadCategory.Highway:
 					return "Highways";
+				case RoadCategory.Bike:
+					return "Bike roads";
+				case RoadCategory.Bus:
+					return "Bus roads";
+				case RoadCategory.Trolleybus:
+					return "Trolleybus roads";
+				case RoadCategory.Tram:
+					return "Tram roads";
+				case RoadCategory.Monorail:
+					return "Monorail roads";
 				default:
 					break;
 			}
 			return "";
 		}
-
-		/*
-		private static bool IsPartOfRoadway(NetInfo.Lane lane)
-        {
-			var laneTypes = (NetInfo.LaneType.Vehicle | NetInfo.LaneType.TransportVehicle | NetInfo.LaneType.Parking);
-			var vehicleTypes = (VehicleInfo.VehicleType.Car | VehicleInfo.VehicleType.Tram | VehicleInfo.VehicleType.Trolleybus | VehicleInfo.VehicleType.Bicycle);
-
-			return (lane.m_laneType & laneTypes) != 0 && 
-				   (lane.m_vehicleType & vehicleTypes) != 0;
-		}
-		*/
 
 		private static bool IsVehicleLane(NetInfo.Lane lane)
         {
@@ -114,16 +119,50 @@ namespace BetterRoadToolbar
 			return (uint)Mathf.Floor(info.m_halfWidth / 4.0f);
 		}
 
-		public static RoadCategory GetRoadCategory(NetInfo info)
+		public static List< RoadCategory > GetRoadCategories(NetInfo info)
 		{
+			var cats = new List<RoadCategory>();
+
+			if (HasBikeLanes(info))
+            {
+				cats.Add(RoadCategory.Bike);
+            }
+
+			if (HasBusLanes(info))
+			{
+				cats.Add(RoadCategory.Bus);
+			}
+
+			if (HasTramTracks(info))
+			{
+				cats.Add(RoadCategory.Tram);
+			}
+
+			if (HasTrolleybusWires(info))
+			{
+				cats.Add(RoadCategory.Trolleybus);
+			}
+
+			if (HasMonorail(info))
+			{
+				cats.Add(RoadCategory.Monorail);
+			}
+
+			if (cats.Count > 0)
+			{ 
+				return cats;
+            }
+
 			if ((info.m_netAI as RoadBaseAI).m_highwayRules && !info.m_hasPedestrianLanes)
 			{
-				return RoadCategory.Highway;
+				cats.Add( RoadCategory.Highway);
+				return cats;
 			}
 
 			if (!info.m_createPavement)
 			{
-				return RoadCategory.Rural;
+				cats.Add(RoadCategory.Rural);
+				return cats;
 			}
 
 			uint laneCount = GetLaneCount(info);
@@ -133,16 +172,24 @@ namespace BetterRoadToolbar
             {
 				case 0:
 				case 1:
-					return RoadCategory.Urban_1U;
+					cats.Add( RoadCategory.Urban_1U);
+					break;
 				case 2:
-					return laneCount <= 2 ? RoadCategory.Urban_2U_2LMax : RoadCategory.Urban_2U_3LMin;
+					cats.Add(laneCount <= 2 ? RoadCategory.Urban_2U_2LMax : RoadCategory.Urban_2U_3LMin);
+					break;
 				case 3:
-					return RoadCategory.Urban_3U;
+					cats.Add(RoadCategory.Urban_3U);
+					break;
 				case 4:
-					return laneCount <= 4 ? RoadCategory.Urban_4U_4LMax : RoadCategory.Urban_4U_5LMin;
+					cats.Add(laneCount <= 4 ? RoadCategory.Urban_4U_4LMax : RoadCategory.Urban_4U_5LMin);
+					break;
+
 				default:
-					return RoadCategory.Urban_5UMin;
-            }		
+					cats.Add(RoadCategory.Urban_5UMin);
+					break;
+
+			}
+			return cats;
 		}
 
 		public static GeneratedGroupPanel.GroupInfo CreateGroup(RoadCategory roadType)

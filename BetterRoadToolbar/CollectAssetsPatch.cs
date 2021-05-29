@@ -35,14 +35,18 @@ namespace BetterRoadToolbar
 				if (info != null &&
 					info.GetSubService() == ItemClass.SubService.None &&
 					info.GetService() == ItemClass.Service.Road &&
+					info.category.StartsWith("Roads") && // filters out Snowfall DLC tram-only roads. alternatively, could patch GeneratedScrollPanel.CollectAssets to include them.
 					(!toolManagerExists || info.m_availableIn.IsFlagSet(Singleton<ToolManager>.instance.m_properties.m_mode)) &&
 					info.m_placementStyle == ItemClass.Placement.Manual)
 				{
-					RoadCategory roadType = RoadAnalyser.GetRoadCategory(info);
+					var cats = RoadAnalyser.GetRoadCategories(info);
 
-					if (!categoriesNeeded.Contains(roadType))
+					foreach (var cat in cats)
 					{
-						categoriesNeeded.Add(roadType);
+						if (!categoriesNeeded.Contains(cat))
+						{
+							categoriesNeeded.Add(cat);
+						}
 					}
 				}
 			}
