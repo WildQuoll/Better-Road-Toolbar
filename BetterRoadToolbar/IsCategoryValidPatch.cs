@@ -21,11 +21,8 @@ namespace BetterRoadToolbar
 				return;
             }
 
-			var cellWidth = RoadAnalyser.GetCellWidth(info);
-			var laneCount = RoadAnalyser.GetLaneCount(info);
-			var roadType = RoadAnalyser.GetRoadType(info);
-
-			var group = RoadAnalyser.CreateGroup(roadType, cellWidth, laneCount);
+			var roadType = RoadAnalyser.GetRoadCategory(info);
+			var group = RoadAnalyser.CreateGroup(roadType);
 
 			__result = (group.name == ___m_Category);
 		}

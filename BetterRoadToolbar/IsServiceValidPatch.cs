@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace BetterRoadToolbar
 {
-	[HarmonyPatch(typeof(RoadsPanel), "IsServiceValid")]
+	[HarmonyPatch(typeof(RoadsGroupPanel), "IsServiceValid")]
 	class IsServiceValidPatch
 	{
 		[HarmonyPostfix]
@@ -19,7 +19,7 @@ namespace BetterRoadToolbar
 				return;
             }
 
-			// Unlike default, we don't filter our roads without car lanes
+			// Unlike default, we don't filter out roads without car lanes
 			__result = info.GetService() == ItemClass.Service.Road;
 		}
 	}

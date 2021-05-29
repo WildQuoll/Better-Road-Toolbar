@@ -1,7 +1,6 @@
 ﻿using ColossalFramework.UI;
 using HarmonyLib;
 using System;
-using UnityEngine;
 
 namespace BetterRoadToolbar
 {
@@ -10,11 +9,9 @@ namespace BetterRoadToolbar
 	class SpawnButtonEntryPatch
 	{
 		[HarmonyPostfix]
-		public static void Postfix(string localeID, ref UIButton __result)
+		public static void Postfix(UITabstrip strip, string name, string category, bool isDefaultCategory, string localeID, string unlockText, string spriteBase, bool enabled, bool forceFillContainer, ref UIButton __result)
 		{
 			string cat = "MAIN_CATEGORY";
-
-			Debug.Log(localeID + "..." + __result.tooltip); // temp
 			if (localeID == cat && __result.tooltip.StartsWith(cat))
             {
 				__result.tooltip = __result.tooltip.Replace(cat + "[", "");

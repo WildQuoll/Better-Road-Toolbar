@@ -25,7 +25,7 @@ namespace BetterRoadToolbar
 
 			__result.Clear();
 
-			var categoriesNeeded = new SortedDictionary<RoadType, SortedDictionary< uint /* cell width */, SortedDictionary< uint /* lane count */, uint> > >();
+			var categoriesNeeded = new List<RoadCategory >();
 
 			var toolManagerExists = Singleton<ToolManager>.exists;
 
@@ -38,43 +38,20 @@ namespace BetterRoadToolbar
 					(!toolManagerExists || info.m_availableIn.IsFlagSet(Singleton<ToolManager>.instance.m_properties.m_mode)) &&
 					info.m_placementStyle == ItemClass.Placement.Manual)
 				{
-					RoadType roadType = RoadAnalyser.GetRoadType(info);
-					uint cellWidth = RoadAnalyser.GetCellWidth(info);
-					uint laneCount = RoadAnalyser.GetLaneCount(info);
+					RoadCategory roadType = RoadAnalyser.GetRoadCategory(info);
 
-					if (!categoriesNeeded.ContainsKey(roadType))
-                    {
-						categoriesNeeded.Add(roadType, new SortedDictionary<uint, SortedDictionary< uint, uint > >());
-                    }
-
-					if (!categoriesNeeded[roadType].ContainsKey(cellWidth))
-                    {
-						categoriesNeeded[roadType].Add(cellWidth, new SortedDictionary<uint, uint>());
+					if (!categoriesNeeded.Contains(roadType))
+					{
+						categoriesNeeded.Add(roadType);
 					}
-
-					if (!categoriesNeeded[roadType][cellWidth].ContainsKey(laneCount))
-                    {
-						categoriesNeeded[roadType][cellWidth].Add(laneCount, 1);
-                    }
-					else
-                    {
-						categoriesNeeded[roadType][cellWidth][laneCount] += 1;
-                    }
 				}
 			}
 
-			foreach(var r in categoriesNeeded)
+			categoriesNeeded.Sort();
+
+			foreach(var cat in categoriesNeeded)
             {
-				var roadType = r.Key;
-				foreach(var s in r.Value)
-                {
-					var cellWidth = s.Key;
-					foreach (var t in s.Value)
-					{
-						var laneCount = t.Key;
-						__result.Add(RoadAnalyser.CreateGroup(roadType, cellWidth, laneCount));
-					}
-                }
+				__result.Add(RoadAnalyser.CreateGroup(cat));
             }
 		}
     }
