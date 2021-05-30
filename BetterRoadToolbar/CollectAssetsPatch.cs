@@ -23,6 +23,29 @@ namespace BetterRoadToolbar
 				return;
 			}
 
+			var defaultRoadTabs = new string[]
+			{
+				"RoadsSmall",
+				"RoadsMedium",
+				"RoadsLarge",
+				"RoadsHighway",
+
+				// NExt2
+				"RoadsTiny",
+				"RoadsSmallHV",
+				"RoadsBusways",
+				"RoadsPedestrians"
+			};
+
+			// Keep intersections, toll booths, and similar tabs
+			var toKeep = new List<GeneratedGroupPanel.GroupInfo>();
+			foreach(var group in __result)
+            {
+				if (!defaultRoadTabs.Contains(group.name))
+                {
+					toKeep.Add(group);
+                }
+            }
 			__result.Clear();
 
 			var categoriesNeeded = new List<RoadCategory >();
@@ -56,6 +79,11 @@ namespace BetterRoadToolbar
 			foreach(var cat in categoriesNeeded)
             {
 				__result.Add(RoadAnalyser.CreateGroup(cat));
+            }
+
+			foreach(var group in toKeep)
+            {
+				__result.Add(group);
             }
 		}
     }

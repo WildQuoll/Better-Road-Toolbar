@@ -11,7 +11,7 @@ namespace BetterRoadToolbar
         {
             if (patched) return;
 
-            Harmony.DEBUG = true;
+            //Harmony.DEBUG = true;
 
             patched = true;
             var harmony = new Harmony(HarmonyId);

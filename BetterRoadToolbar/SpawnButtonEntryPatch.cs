@@ -1,6 +1,7 @@
 ﻿using ColossalFramework.UI;
 using HarmonyLib;
 using System;
+using UnityEngine;
 
 namespace BetterRoadToolbar
 {
@@ -11,11 +12,16 @@ namespace BetterRoadToolbar
 		[HarmonyPostfix]
 		public static void Postfix(UITabstrip strip, string name, string category, bool isDefaultCategory, string localeID, string unlockText, string spriteBase, bool enabled, bool forceFillContainer, ref UIButton __result)
 		{
-			string cat = "MAIN_CATEGORY";
-			if (localeID == cat && __result.tooltip.StartsWith(cat))
+			string id = "MAIN_CATEGORY";
+			if (localeID == id && __result.tooltip.StartsWith(id))
             {
-				__result.tooltip = __result.tooltip.Replace(cat + "[", "");
-				__result.tooltip = __result.tooltip.Replace("]:0", "");
+				string s = __result.tooltip.Replace(id + "[WQ.BRT/", "");
+				s = s.Replace("]:0", "");
+
+				RoadCategory cat = (RoadCategory)int.Parse(s);
+
+				__result.tooltip = RoadAnalyser.GetTooltip(cat);
+				__result.text = RoadAnalyser.GetToolbarTitle(cat);
             }
 		}
 	}

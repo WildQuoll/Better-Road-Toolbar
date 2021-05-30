@@ -27,24 +27,62 @@ namespace BetterRoadToolbar
 
 	class RoadAnalyser
     {
-		private static string ToString(RoadCategory cat)
+		public static string GetToolbarTitle(RoadCategory cat)
 		{
 			switch (cat)
 			{
 				case RoadCategory.Urban_1U:
-					return "Urban 1U";
+					return "1U";
 				case RoadCategory.Urban_2U_2LMax:
-					return "Urban 2U, ≤2L";
+					return "2U";
 				case RoadCategory.Urban_2U_3LMin:
-					return "Urban 2U, >2L";
+					return "2U 3L+";
 				case RoadCategory.Urban_3U:
-					return "Urban 3U";
+					return "3U";
 				case RoadCategory.Urban_4U_4LMax:
-					return "Urban 4U, ≤4L";
+					return "4U";
 				case RoadCategory.Urban_4U_5LMin:
-					return "Urban 4U, >4L";
+					return "4U 5L+";
 				case RoadCategory.Urban_5UMin:
-					return "Urban >4U";
+					return "5U+";
+				case RoadCategory.Rural:
+					return "Rural";
+				case RoadCategory.Highway:
+					return "Hwy";
+				case RoadCategory.Bike:
+					return "Bike";
+				case RoadCategory.Bus:
+					return "Bus";
+				case RoadCategory.Trolleybus:
+					return "Trolley";
+				case RoadCategory.Tram:
+					return "Tram";
+				case RoadCategory.Monorail:
+					return "Mono";
+				default:
+					break;
+			}
+			return "";
+		}
+
+		public static string GetTooltip(RoadCategory cat)
+		{
+			switch (cat)
+			{
+				case RoadCategory.Urban_1U:
+					return "Urban, 1U wide";
+				case RoadCategory.Urban_2U_2LMax:
+					return "Urban, 2U wide, ≤2 lanes";
+				case RoadCategory.Urban_2U_3LMin:
+					return "Urban, 2U wide, ≥3 lanes";
+				case RoadCategory.Urban_3U:
+					return "Urban, 3U wide";
+				case RoadCategory.Urban_4U_4LMax:
+					return "Urban, 4U wide, ≤4 lanes";
+				case RoadCategory.Urban_4U_5LMin:
+					return "Urban, 4U wide, ≥5 lanes";
+				case RoadCategory.Urban_5UMin:
+					return "Urban, 5U wide or wider";
 				case RoadCategory.Rural:
 					return "Rural";
 				case RoadCategory.Highway:
@@ -194,7 +232,7 @@ namespace BetterRoadToolbar
 
 		public static GeneratedGroupPanel.GroupInfo CreateGroup(RoadCategory roadType)
 		{
-			return new GeneratedGroupPanel.GroupInfo(ToString(roadType), (int)roadType);
+			return new GeneratedGroupPanel.GroupInfo("WQ.BRT/" + ((int)roadType).ToString(), (int)roadType);
 		}
 
 		private class LaneExtent

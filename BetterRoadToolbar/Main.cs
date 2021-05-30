@@ -7,7 +7,7 @@ namespace BetterRoadToolbar
     public class Mod : IUserMod
     {
         public string Name => "Better Road Toolbar";
-        public string Description => "TODO Write me.";
+        public string Description => "Adds more tabs in the Roads toolbar and changes sort order to make finding the right road that little bit easier.";
 
         public void OnEnabled()
         {
