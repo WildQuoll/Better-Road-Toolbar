@@ -179,7 +179,7 @@ namespace BetterRoadToolbar
 
 		private static uint GetCellWidth(NetInfo info)
 		{
-			return (uint)Mathf.Floor(info.m_halfWidth / 4.0f);
+			return (uint)Mathf.Round(info.m_halfWidth / 4.0f);
 		}
 
 		public static List< RoadCategory > GetRoadCategories(NetInfo info)
