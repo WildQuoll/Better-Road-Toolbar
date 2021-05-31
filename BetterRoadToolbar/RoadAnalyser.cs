@@ -299,56 +299,6 @@ namespace BetterRoadToolbar
 			return (dir & NetInfo.Direction.Both) == NetInfo.Direction.Both;
 		}
 
-		/*
-		public static bool HasMedian(NetInfo info)
-        {
-			var laneExtents = new List<LaneExtent>();
-
-			foreach(var lane in info.m_lanes)
-            {
-				if(IsPartOfRoadway(lane))
-                {
-					laneExtents.Add(new LaneExtent(lane.m_position - lane.m_width / 2.0f, lane.m_position + lane.m_width / 2.0f));
-                }
-            }
-
-			if (laneExtents.Count < 2)
-            {
-				return false; // no roadway (?) or a single lane, so no medians
-            }
-
-			float medianThreshold = 0.2f; // a gap larger than 20cm is a median 
-
-			var roadwayExtent = laneExtents[0];
-			laneExtents.RemoveAt(0);
-
-			while(laneExtents.Count > 0)
-            {
-				bool foundNeighbouringLane = false;
-				foreach(var laneExtent in laneExtents)
-                {
-					if (DistanceBetweenExtents(laneExtent, roadwayExtent) < medianThreshold)
-                    {
-						roadwayExtent.min = Mathf.Min(roadwayExtent.min, laneExtent.min);
-						roadwayExtent.max = Mathf.Max(roadwayExtent.max, laneExtent.max);
-						laneExtents.Remove(laneExtent);
-						foundNeighbouringLane = true;
-						break;
-                    }
-                }
-
-				if (!foundNeighbouringLane)
-				{
-					Debug.Log(info.name + " has a median");
-					return true; // found a median
-				}
-            }
-
-			Debug.Log(info.name + " does NOT have a median");
-			return false;
-        }
-		*/
-
 		public static float GetEffectiveRoadwayWidth(NetInfo info)
         {
 			float min = float.MaxValue;
