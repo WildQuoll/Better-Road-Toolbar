@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static GeneratedGroupPanel;
 
 namespace BetterRoadToolbar
 {
@@ -12,12 +13,12 @@ namespace BetterRoadToolbar
     class CollectAssetsPatch
     {
 		[HarmonyPostfix]
-        public static void Postfix(GeneratedGroupPanel.GroupFilter filter,
-								   Comparison<GeneratedGroupPanel.GroupInfo > comparison,
-								   ref PoolList<GeneratedGroupPanel.GroupInfo> __result,
+        public static void Postfix(GroupFilter filter,
+								   Comparison<GroupInfo > comparison,
+								   ref PoolList<GroupInfo> __result,
 								   GeneratedGroupPanel __instance)
         {
-			if (!filter.IsFlagSet(GeneratedGroupPanel.GroupFilter.Net) ||
+			if (!filter.IsFlagSet(GroupFilter.Net) ||
 				__instance.service != ItemClass.Service.Road)
 			{
 				return;
@@ -37,24 +38,24 @@ namespace BetterRoadToolbar
 				"RoadsPedestrians"
 			};
 
-			// Keep intersections, toll booths, and similar tabs
-			var toKeep = new List<GeneratedGroupPanel.GroupInfo>();
+			// Intersections, toll booths, etc. and custom modded tabs
+			var miscTabs = new List<GroupInfo>();
 			foreach(var group in __result)
             {
 				if (!defaultRoadTabs.Contains(group.name))
                 {
-					toKeep.Add(group);
+					miscTabs.Add(group);
                 }
             }
 			__result.Clear();
 
-			var categoriesNeeded = new List<RoadCategory >();
+			var roadCategoriesNeeded = new List<RoadCategory >();
 
 			var toolManagerExists = Singleton<ToolManager>.exists;
 
-			for (uint num = 0u; num < PrefabCollection<NetInfo>.LoadedCount(); num++)
+			for (uint i = 0u; i < PrefabCollection<NetInfo>.LoadedCount(); ++i)
 			{
-				NetInfo info = PrefabCollection<NetInfo>.GetLoaded(num);
+				NetInfo info = PrefabCollection<NetInfo>.GetLoaded(i);
 				if (info != null &&
 					info.GetSubService() == ItemClass.SubService.None &&
 					info.GetService() == ItemClass.Service.Road &&
@@ -66,24 +67,44 @@ namespace BetterRoadToolbar
 
 					foreach (var cat in cats)
 					{
-						if (!categoriesNeeded.Contains(cat))
+						if (!roadCategoriesNeeded.Contains(cat))
 						{
-							categoriesNeeded.Add(cat);
+							roadCategoriesNeeded.Add(cat);
 						}
 					}
 				}
 			}
 
-			categoriesNeeded.Sort();
+			roadCategoriesNeeded.Sort();
 
-			foreach(var cat in categoriesNeeded)
+			// Check which of the other tabs can be removed
+			// Note: We only allow Buildings, in line with RoadsGroupPanel.groupFilter.
+			var miscCategoriesNeeded = new List<string>();
+			for (uint i = 0u; i < PrefabCollection<BuildingInfo>.LoadedCount(); ++i)
+			{
+				BuildingInfo info = PrefabCollection<BuildingInfo>.GetLoaded(i);
+				// We could check manual placement and all that, but it seems unnecessary
+				if(info != null && info.GetService() == ItemClass.Service.Road)
+                {
+					if(!miscCategoriesNeeded.Contains(info.category))
+                    {
+						miscCategoriesNeeded.Add(info.category);
+                    }
+                }
+			}
+
+			// Re-create tabs
+			foreach (var cat in roadCategoriesNeeded)
             {
 				__result.Add(RoadAnalyser.CreateGroup(cat));
             }
 
-			foreach(var group in toKeep)
+			foreach(var miscTab in miscTabs)
             {
-				__result.Add(group);
+				if (miscCategoriesNeeded.Contains(miscTab.name))
+				{
+					__result.Add(miscTab);
+				}
             }
 		}
     }
