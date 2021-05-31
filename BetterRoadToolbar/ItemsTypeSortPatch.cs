@@ -38,12 +38,12 @@ namespace BetterRoadToolbar
                 return ToComparisonInt(firstLaneCount < secondLaneCount);
             }
 
-            bool firstTwoWay = RoadAnalyser.IsTwoWay(first);
-            bool secondTwoWay = RoadAnalyser.IsTwoWay(second);
+            uint firstDirLaneCount = RoadAnalyser.GetHighestLaneCountPerDirection(first);
+            uint secondDirLaneCount = RoadAnalyser.GetHighestLaneCountPerDirection(second);
 
-            if (firstTwoWay != secondTwoWay)
+            if (firstDirLaneCount != secondDirLaneCount)
             {
-                return ToComparisonInt(firstTwoWay); // two way before one way
+                return ToComparisonInt(firstDirLaneCount < secondDirLaneCount); // 2+2 before 1+3 before 4L1W
             }
 
             bool firstHasMonorail = RoadAnalyser.HasMonorail(first);

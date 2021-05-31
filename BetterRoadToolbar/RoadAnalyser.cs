@@ -103,6 +103,11 @@ namespace BetterRoadToolbar
 			return "";
 		}
 
+		private static bool HasDirection(NetInfo.Lane lane, NetInfo.Direction direction)
+        {
+			return (lane.m_direction & direction) != 0;
+		}
+
 		private static bool IsVehicleLane(NetInfo.Lane lane)
         {
 			var laneTypes = (NetInfo.LaneType.Vehicle | NetInfo.LaneType.TransportVehicle);
@@ -132,6 +137,26 @@ namespace BetterRoadToolbar
                 {
 					count += 1;
                 }
+			}
+
+			return count;
+		}
+
+		public static uint GetHighestLaneCountPerDirection(NetInfo info)
+        {
+			return Math.Max(GetLaneCount(info, NetInfo.Direction.Forward), GetLaneCount(info, NetInfo.Direction.Backward));
+        }
+
+		public static uint GetLaneCount(NetInfo info, NetInfo.Direction direction)
+		{
+			uint count = 0;
+
+			foreach (var lane in info.m_lanes)
+			{
+				if (HasDirection(lane, direction) && IsVehicleLane(lane))
+				{
+					count += 1;
+				}
 			}
 
 			return count;
