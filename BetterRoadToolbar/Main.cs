@@ -18,5 +18,7 @@ namespace BetterRoadToolbar
         {
             if (HarmonyHelper.IsHarmonyInstalled) Patcher.UnpatchAll();
         }
+
+        public static string Identifier = "WQ.BRT/";
     }
 }

@@ -232,7 +232,7 @@ namespace BetterRoadToolbar
 
 		public static GeneratedGroupPanel.GroupInfo CreateGroup(RoadCategory roadType)
 		{
-			return new GeneratedGroupPanel.GroupInfo("WQ.BRT/" + ((int)roadType).ToString(), (int)roadType);
+			return new GeneratedGroupPanel.GroupInfo(Mod.Identifier + ((int)roadType).ToString(), (int)roadType);
 		}
 
 		private class LaneExtent
