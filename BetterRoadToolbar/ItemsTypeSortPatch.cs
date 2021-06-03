@@ -8,11 +8,37 @@ using UnityEngine;
 
 namespace BetterRoadToolbar
 {
-    class ItemsTypeSort
+    class SortUtils
     {
         private static int ToComparisonInt(bool isLessThan)
         {
             return isLessThan ? -1 : 1;
+        }
+
+        private static int GetCategoryOrder(string cat)
+        {
+            switch (cat)
+            {
+                case "RoadsTiny": // NExt 2
+                    return 0;
+                case "RoadsSmall":
+                    return 1;
+                case "RoadsSmallHV": // NExt 2
+                    return 2;
+                case "RoadsMedium":
+                    return 3;
+                case "RoadsLarge":
+                    return 4;
+                case "RoadsHighway":
+                    return 5;
+                default:
+                    return 6;
+            };
+        }
+
+        public static int CompareRoadCategories(string first, string second)
+        {
+            return ToComparisonInt(GetCategoryOrder(first) < GetCategoryOrder(second));
         }
 
         private static int Compare(NetInfo first, NetInfo second)
@@ -22,72 +48,72 @@ namespace BetterRoadToolbar
                 return ToComparisonInt(first.m_halfWidth < second.m_halfWidth);
             }
 
-            float firstRoadwayWidth = RoadAnalyser.GetEffectiveRoadwayWidth(first);
-            float secondRoadwayWidth = RoadAnalyser.GetEffectiveRoadwayWidth(second);
+            float firstRoadwayWidth = RoadUtils.GetEffectiveRoadwayWidth(first);
+            float secondRoadwayWidth = RoadUtils.GetEffectiveRoadwayWidth(second);
 
             if (Mathf.Abs(firstRoadwayWidth - secondRoadwayWidth) > 0.1f)
             {
                 return ToComparisonInt(firstRoadwayWidth < secondRoadwayWidth); // narrower road before wider road
             }
 
-            uint firstLaneCount = RoadAnalyser.GetLaneCount(first);
-            uint secondLaneCount = RoadAnalyser.GetLaneCount(second);
+            uint firstLaneCount = RoadUtils.GetLaneCount(first);
+            uint secondLaneCount = RoadUtils.GetLaneCount(second);
 
             if (firstLaneCount != secondLaneCount)
             {
                 return ToComparisonInt(firstLaneCount < secondLaneCount);
             }
 
-            uint firstDirLaneCount = RoadAnalyser.GetHighestLaneCountPerDirection(first);
-            uint secondDirLaneCount = RoadAnalyser.GetHighestLaneCountPerDirection(second);
+            uint firstDirLaneCount = RoadUtils.GetHighestLaneCountPerDirection(first);
+            uint secondDirLaneCount = RoadUtils.GetHighestLaneCountPerDirection(second);
 
             if (firstDirLaneCount != secondDirLaneCount)
             {
                 return ToComparisonInt(firstDirLaneCount < secondDirLaneCount); // 2+2 before 1+3 before 4L1W
             }
 
-            bool firstHasMonorail = RoadAnalyser.HasMonorail(first);
-            bool secondHasMonorail = RoadAnalyser.HasMonorail(second);
+            bool firstHasMonorail = RoadUtils.HasMonorail(first);
+            bool secondHasMonorail = RoadUtils.HasMonorail(second);
 
             if (firstHasMonorail != secondHasMonorail)
             {
                 return ToComparisonInt(secondHasMonorail); // no monorail before monorail
             }
 
-            bool firstHasTramTracks = RoadAnalyser.HasTramTracks(first);
-            bool secondHasTramTracks = RoadAnalyser.HasTramTracks(second);
+            bool firstHasTramTracks = RoadUtils.HasTramTracks(first);
+            bool secondHasTramTracks = RoadUtils.HasTramTracks(second);
 
             if (firstHasTramTracks != secondHasTramTracks)
             {
                 return ToComparisonInt(secondHasTramTracks);
             }
 
-            bool firstHasDedicatedTramLanes = RoadAnalyser.HasDedicatedTramLanes(first);
-            bool secondHasDedicatedTramLanes = RoadAnalyser.HasDedicatedTramLanes(second);
+            bool firstHasDedicatedTramLanes = RoadUtils.HasDedicatedTramLanes(first);
+            bool secondHasDedicatedTramLanes = RoadUtils.HasDedicatedTramLanes(second);
 
             if (firstHasDedicatedTramLanes != secondHasDedicatedTramLanes)
             {
                 return ToComparisonInt(secondHasDedicatedTramLanes);
             }
 
-            bool firstHasTrolleybusWires = RoadAnalyser.HasTrolleybusWires(first);
-            bool secondHasTrolleybusWires = RoadAnalyser.HasTrolleybusWires(second);
+            bool firstHasTrolleybusWires = RoadUtils.HasTrolleybusWires(first);
+            bool secondHasTrolleybusWires = RoadUtils.HasTrolleybusWires(second);
 
             if (firstHasTrolleybusWires != secondHasTrolleybusWires)
             {
                 return ToComparisonInt(secondHasTrolleybusWires);
             }
 
-            bool firstHasBusLanes = RoadAnalyser.HasBusLanes(first);
-            bool secondHasBusLanes = RoadAnalyser.HasBusLanes(second);
+            bool firstHasBusLanes = RoadUtils.HasBusLanes(first);
+            bool secondHasBusLanes = RoadUtils.HasBusLanes(second);
 
             if (firstHasBusLanes != secondHasBusLanes)
             {
                 return ToComparisonInt(secondHasBusLanes);
             }
 
-            bool firstHasBikeLanes = RoadAnalyser.HasBikeLanes(first);
-            bool secondHasBikeLanes = RoadAnalyser.HasBikeLanes(second);
+            bool firstHasBikeLanes = RoadUtils.HasBikeLanes(first);
+            bool secondHasBikeLanes = RoadUtils.HasBikeLanes(second);
 
             if (firstHasBikeLanes != secondHasBikeLanes)
             {
@@ -107,8 +133,8 @@ namespace BetterRoadToolbar
                 return ToComparisonInt(second.m_hasParkingSpaces); // no parking before parking
             }
 
-            uint firstAuxiliaryLaneCount = RoadAnalyser.GetAuxiliaryLaneCount(first);
-            uint secondAuxiliaryLaneCount = RoadAnalyser.GetAuxiliaryLaneCount(second);
+            uint firstAuxiliaryLaneCount = RoadUtils.GetAuxiliaryLaneCount(first);
+            uint secondAuxiliaryLaneCount = RoadUtils.GetAuxiliaryLaneCount(second);
 
             if (firstAuxiliaryLaneCount != secondAuxiliaryLaneCount)
             {
@@ -156,11 +182,25 @@ namespace BetterRoadToolbar
 		[HarmonyPrefix]
         static bool Prefix(PrefabInfo a, PrefabInfo b, ref int __result)
         {
-            int result = ItemsTypeSort.Sort(a, b);
+            if(Mod.CurrentConfig.UseStandardSortOrder)
+            {
+                // Pre-sort the roads by their default category (Small roads ALWAYS before Medium for example).
+                int catResult = SortUtils.CompareRoadCategories(a.category, b.category);
+
+                if (catResult == 0)
+                {
+                    return true; // fall back to default sorting
+                }
+
+                __result = catResult;
+                return false;
+            }
+
+            int result = SortUtils.Sort(a, b);
 
             if (result == 0)
             {
-                return true; // use default sort
+                return true; // fall back to default sorting
             }
             else
             {
@@ -176,7 +216,12 @@ namespace BetterRoadToolbar
         [HarmonyPrefix]
         static bool Prefix(PrefabInfo a, PrefabInfo b, ref int __result)
         {
-            int result = ItemsTypeSort.Sort(a, b);
+            if (Mod.CurrentConfig.UseStandardSortOrder)
+            {
+                return true;
+            }
+
+            int result = SortUtils.Sort(a, b);
 
             if (result == 0)
             {

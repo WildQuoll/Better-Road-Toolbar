@@ -25,8 +25,27 @@ namespace BetterRoadToolbar
 		Monorail
 	}
 
-	class RoadAnalyser
+	static class RoadUtils
     {
+		public static bool IsDefaultRoadCategory(string cat)
+		{
+			switch (cat)
+			{
+				case "RoadsSmall":
+				case "RoadsMedium":
+				case "RoadsLarge":
+				case "RoadsHighway":
+				// NExt2
+				case "RoadsTiny":
+				case "RoadsSmallHV":
+					return true;
+				case "RoadsBusways":
+					return Mod.CurrentConfig.CreateTabsForTransportModes; // treat it as default only if we're creating our own Bus tab
+				default:
+					return false;
+			};
+		}
+
 		public static string GetToolbarTitle(RoadCategory cat)
 		{
 			switch (cat)
@@ -186,35 +205,38 @@ namespace BetterRoadToolbar
 		{
 			var cats = new List<RoadCategory>();
 
-			if (HasBikeLanes(info))
-            {
-				cats.Add(RoadCategory.Bike);
-            }
-
-			if (HasBusLanes(info))
+			if (Mod.CurrentConfig.CreateTabsForTransportModes)
 			{
-				cats.Add(RoadCategory.Bus);
-			}
+				if (HasBikeLanes(info))
+				{
+					cats.Add(RoadCategory.Bike);
+				}
 
-			if (HasTramTracks(info))
-			{
-				cats.Add(RoadCategory.Tram);
-			}
+				if (HasBusLanes(info))
+				{
+					cats.Add(RoadCategory.Bus);
+				}
 
-			if (HasTrolleybusWires(info))
-			{
-				cats.Add(RoadCategory.Trolleybus);
-			}
+				if (HasTramTracks(info))
+				{
+					cats.Add(RoadCategory.Tram);
+				}
 
-			if (HasMonorail(info))
-			{
-				cats.Add(RoadCategory.Monorail);
-			}
+				if (HasTrolleybusWires(info))
+				{
+					cats.Add(RoadCategory.Trolleybus);
+				}
 
-			if (cats.Count > 0)
-			{ 
-				return cats;
-            }
+				if (HasMonorail(info))
+				{
+					cats.Add(RoadCategory.Monorail);
+				}
+
+				if (cats.Count > 0)
+				{
+					return cats;
+				}
+			}
 
 			if ((info.m_netAI as RoadBaseAI).m_highwayRules && !info.m_hasPedestrianLanes)
 			{
@@ -272,33 +294,6 @@ namespace BetterRoadToolbar
 			public float max;
         }
 
-		/*
-		//! returns 0 if extents touch or overlap
-		private static float DistanceBetweenExtents(LaneExtent first, LaneExtent second)
-        {
-			if (first.min <= second.max && second.min <= first.max)
-            {
-				return 0.0f;
-            }
-
-			return Mathf.Min(Mathf.Abs(first.max - second.min), Mathf.Abs(first.min - second.max));
-        }*/
-
-		public static bool IsTwoWay(NetInfo info)
-		{
-			NetInfo.Direction dir = 0;
-
-			foreach (var lane in info.m_lanes)
-			{
-				if (IsVehicleLane(lane))
-                {
-					dir |= lane.m_direction;
-                }
-			}
-
-			return (dir & NetInfo.Direction.Both) == NetInfo.Direction.Both;
-		}
-
 		public static float GetEffectiveRoadwayWidth(NetInfo info)
         {
 			float min = float.MaxValue;
@@ -336,8 +331,8 @@ namespace BetterRoadToolbar
 			foreach (var lane in info.m_lanes)
 			{
 				if( (lane.m_vehicleType & VehicleInfo.VehicleType.Tram) != 0 && 
-						(lane.m_laneType == NetInfo.LaneType.TransportVehicle || // cars allowed but discouraged
-						(lane.m_vehicleType & VehicleInfo.VehicleType.Car) == 0) ) // cars not allowed
+					(lane.m_laneType == NetInfo.LaneType.TransportVehicle || // cars allowed but discouraged
+					(lane.m_vehicleType & VehicleInfo.VehicleType.Car) == 0) ) // cars not allowed
 				{
 					return true;
                 }

@@ -1,14 +1,12 @@
 ﻿using ColossalFramework;
 using HarmonyLib;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 using static GeneratedGroupPanel;
 
 namespace BetterRoadToolbar
 {
+	// This patch overrides the list of tabs that will be listed in the Roads toolbar (not their contents!).
 	[HarmonyPatch(typeof(GeneratedGroupPanel), "CollectAssets")]
     class CollectAssetsPatch
     {
@@ -24,25 +22,11 @@ namespace BetterRoadToolbar
 				return;
 			}
 
-			var defaultRoadTabs = new string[]
-			{
-				"RoadsSmall",
-				"RoadsMedium",
-				"RoadsLarge",
-				"RoadsHighway",
-
-				// NExt2
-				"RoadsTiny",
-				"RoadsSmallHV",
-				"RoadsBusways",
-				"RoadsPedestrians"
-			};
-
 			// Intersections, toll booths, etc. and custom modded tabs
 			var miscTabs = new List<GroupInfo>();
 			foreach(var group in __result)
             {
-				if (!defaultRoadTabs.Contains(group.name))
+				if (!RoadUtils.IsDefaultRoadCategory(group.name))
                 {
 					miscTabs.Add(group);
                 }
@@ -50,6 +34,7 @@ namespace BetterRoadToolbar
 			__result.Clear();
 
 			var roadCategoriesNeeded = new List<RoadCategory >();
+			var miscCategoriesNeeded = new List<string>();
 
 			var toolManagerExists = Singleton<ToolManager>.exists;
 
@@ -63,7 +48,16 @@ namespace BetterRoadToolbar
 					(!toolManagerExists || info.m_availableIn.IsFlagSet(Singleton<ToolManager>.instance.m_properties.m_mode)) &&
 					info.m_placementStyle == ItemClass.Placement.Manual)
 				{
-					var cats = RoadAnalyser.GetRoadCategories(info);
+					if(Mod.CurrentConfig.IgnoreCustomTabs && !RoadUtils.IsDefaultRoadCategory(info.category))
+                    {
+						if (!miscCategoriesNeeded.Contains(info.category))
+						{
+							miscCategoriesNeeded.Add(info.category);
+						}
+						continue;
+                    }
+
+					var cats = RoadUtils.GetRoadCategories(info);
 
 					foreach (var cat in cats)
 					{
@@ -79,7 +73,6 @@ namespace BetterRoadToolbar
 
 			// Check which of the other tabs can be removed
 			// Note: We only allow Buildings, in line with RoadsGroupPanel.groupFilter.
-			var miscCategoriesNeeded = new List<string>();
 			for (uint i = 0u; i < PrefabCollection<BuildingInfo>.LoadedCount(); ++i)
 			{
 				BuildingInfo info = PrefabCollection<BuildingInfo>.GetLoaded(i);
@@ -96,7 +89,7 @@ namespace BetterRoadToolbar
 			// Re-create tabs
 			foreach (var cat in roadCategoriesNeeded)
             {
-				__result.Add(RoadAnalyser.CreateGroup(cat));
+				__result.Add(RoadUtils.CreateGroup(cat));
             }
 
 			foreach(var miscTab in miscTabs)
