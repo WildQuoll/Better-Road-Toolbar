@@ -94,7 +94,7 @@ namespace BetterRoadToolbar
         private const string CONFIG_PATH = "BetterRoadToolbarConfig.txt";
 
         public bool UseStandardSortOrder = false;
-        public bool IgnoreCustomTabs = false;
+        public bool IgnoreCustomTabs = true;
         public bool CreateTabsForTransportModes = true;
     }
 }
