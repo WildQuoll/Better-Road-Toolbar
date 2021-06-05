@@ -33,6 +33,14 @@ namespace BetterRoadToolbar
 
         public static int CompareRoadCategories(string first, string second)
         {
+            int firstOrder = GetCategoryOrder(first);
+            int secondOrder = GetCategoryOrder(second);
+
+            if (firstOrder == secondOrder)
+            {
+                return 0;
+            }
+
             return ToComparisonInt(GetCategoryOrder(first) < GetCategoryOrder(second));
         }
 
