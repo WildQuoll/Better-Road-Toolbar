@@ -36,9 +36,18 @@ namespace BetterRoadToolbar
             return ToComparisonInt(GetCategoryOrder(first) < GetCategoryOrder(second));
         }
 
+        /// <summary>
+        /// Rounds 'value' to the nearest multiple of 'step'.
+        /// </summary>
+        private static float RoundToNearestMultiple(float value, float step)
+        {
+            return Mathf.Round(value / step) * step;
+        }
+
         private static int Compare(NetInfo first, NetInfo second)
         {
-            if (Mathf.Abs(first.m_halfWidth - second.m_halfWidth) > 0.1f)
+            float halfWidthPrecision = 0.25f;
+            if (RoundToNearestMultiple(first.m_halfWidth, halfWidthPrecision) != RoundToNearestMultiple(second.m_halfWidth, halfWidthPrecision))
             {
                 return ToComparisonInt(first.m_halfWidth < second.m_halfWidth);
             }
@@ -46,7 +55,8 @@ namespace BetterRoadToolbar
             float firstRoadwayWidth = RoadUtils.GetEffectiveRoadwayWidth(first);
             float secondRoadwayWidth = RoadUtils.GetEffectiveRoadwayWidth(second);
 
-            if (Mathf.Abs(firstRoadwayWidth - secondRoadwayWidth) > 0.1f)
+            float roadwayWidthPrecision = 0.5f;
+            if (RoundToNearestMultiple(firstRoadwayWidth, roadwayWidthPrecision) != RoundToNearestMultiple(secondRoadwayWidth, roadwayWidthPrecision))
             {
                 return ToComparisonInt(firstRoadwayWidth < secondRoadwayWidth); // narrower road before wider road
             }
