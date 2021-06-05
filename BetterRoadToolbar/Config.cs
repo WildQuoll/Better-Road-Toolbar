@@ -10,13 +10,6 @@ namespace BetterRoadToolbar
             Load(CONFIG_PATH);
         }
 
-        public Config(Config other)
-        {
-            UseStandardSortOrder = other.UseStandardSortOrder;
-            IgnoreCustomTabs = other.IgnoreCustomTabs;
-            CreateTabsForTransportModes = other.CreateTabsForTransportModes;
-        }
-
         private bool FromString(string s)
         {
             return (s == "1");
