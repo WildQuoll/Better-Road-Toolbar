@@ -2,6 +2,7 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using static GeneratedGroupPanel;
 
 namespace BetterRoadToolbar
@@ -45,11 +46,10 @@ namespace BetterRoadToolbar
 				if (info != null &&
 					info.GetSubService() == ItemClass.SubService.None &&
 					info.GetService() == ItemClass.Service.Road &&
-					info.category.StartsWith("Roads") && // filters out Snowfall DLC tram-only roads. alternatively, could patch GeneratedScrollPanel.CollectAssets to include them.
 					(!toolManagerExists || info.m_availableIn.IsFlagSet(Singleton<ToolManager>.instance.m_properties.m_mode)) &&
 					info.m_placementStyle == ItemClass.Placement.Manual)
 				{
-					if(Mod.CurrentConfig.IgnoreCustomTabs && !RoadUtils.IsDefaultRoadCategory(info.category))
+					if (Mod.CurrentConfig.IgnoreCustomTabs && !RoadUtils.IsDefaultRoadCategory(info.category))
                     {
 						if (!miscCategoriesNeeded.Contains(info.category))
 						{
