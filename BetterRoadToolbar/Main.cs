@@ -55,11 +55,20 @@ namespace BetterRoadToolbar
 
             helper.AddSpace(16);
 
-            if (CurrentConfig != EditableConfig || 
-                SceneManager.GetActiveScene().name != "MainMenu") // the settings menu is generated before
+            if (CurrentConfig != EditableConfig || !IsMainMenu())
             {
                 helper.AddGroup("Note: Settings changes will take effect after restarting the game.");
             }
+        }
+
+        public static bool IsMainMenu()
+        {
+            return SceneManager.GetActiveScene().name == "MainMenu";
+        }
+
+        public static bool IsInGame()
+        {
+            return SceneManager.GetActiveScene().name == "Game";
         }
 
         public static string Identifier = "WQ.BRT/";

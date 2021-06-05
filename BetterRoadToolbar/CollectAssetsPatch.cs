@@ -17,7 +17,8 @@ namespace BetterRoadToolbar
 								   GeneratedGroupPanel __instance)
         {
 			if (!filter.IsFlagSet(GroupFilter.Net) ||
-				__instance.service != ItemClass.Service.Road)
+				__instance.service != ItemClass.Service.Road ||
+				!Mod.IsInGame() )
 			{
 				return;
 			}

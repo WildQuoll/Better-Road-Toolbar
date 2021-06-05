@@ -185,6 +185,19 @@ namespace BetterRoadToolbar
                 return 0;
             }
 
+            if (Mod.CurrentConfig.UseStandardSortOrder)
+            {
+                int result = a.m_isCustomContent.CompareTo(b.m_isCustomContent);
+
+                if (result != 0)
+                {
+                    return result;
+                }
+
+                // Use default sorting, but pre-sort by default category (Small roads ALWAYS before Medium for example).
+                return SortUtils.CompareRoadCategories(a.category, b.category);
+            }
+
             return Compare(aNetInfo, bNetInfo);
         }
     }
@@ -195,18 +208,9 @@ namespace BetterRoadToolbar
 		[HarmonyPrefix]
         static bool Prefix(PrefabInfo a, PrefabInfo b, ref int __result)
         {
-            if(Mod.CurrentConfig.UseStandardSortOrder)
+            if (!Mod.IsInGame())
             {
-                // Pre-sort the roads by their default category (Small roads ALWAYS before Medium for example).
-                int catResult = SortUtils.CompareRoadCategories(a.category, b.category);
-
-                if (catResult == 0)
-                {
-                    return true; // fall back to default sorting
-                }
-
-                __result = catResult;
-                return false;
+                return true;
             }
 
             int result = SortUtils.Sort(a, b);
@@ -229,7 +233,7 @@ namespace BetterRoadToolbar
         [HarmonyPrefix]
         static bool Prefix(PrefabInfo a, PrefabInfo b, ref int __result)
         {
-            if (Mod.CurrentConfig.UseStandardSortOrder)
+            if (!Mod.IsInGame())
             {
                 return true;
             }
@@ -238,7 +242,7 @@ namespace BetterRoadToolbar
 
             if (result == 0)
             {
-                return true; // use default sort
+                return true; // fall back to default sorting
             }
             else
             {

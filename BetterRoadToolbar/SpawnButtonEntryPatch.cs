@@ -15,7 +15,7 @@ namespace BetterRoadToolbar
 		[HarmonyPostfix]
 		public static void Postfix(GroupFilter filter, Comparison<GroupInfo> comparison, GeneratedGroupPanel __instance, UITabstrip ___m_Strip)
 		{
-			if (!(__instance is RoadsGroupPanel))
+			if (!(__instance is RoadsGroupPanel) || !Mod.IsInGame())
             {
 				// We only want the "Roads" main tab
 				return;

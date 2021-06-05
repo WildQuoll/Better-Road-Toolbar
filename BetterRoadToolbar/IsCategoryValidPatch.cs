@@ -10,7 +10,7 @@ namespace BetterRoadToolbar
 		[HarmonyPostfix]
 		public static void Postfix(NetInfo info, bool ignore, ref bool __result, ref string ___m_Category)
 		{
-			if(ignore)
+			if(ignore || !Mod.IsInGame())
             {
 				return;
             }
