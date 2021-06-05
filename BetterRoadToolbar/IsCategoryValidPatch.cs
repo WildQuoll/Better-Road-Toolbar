@@ -8,9 +8,9 @@ namespace BetterRoadToolbar
 	class IsCategoryValidPatch
 	{
 		[HarmonyPostfix]
-		public static void Postfix(NetInfo info, bool ignore, ref bool __result, ref string ___m_Category)
+		public static void Postfix(NetInfo info, bool ignore, GeneratedScrollPanel __instance, ref bool __result, ref string ___m_Category)
 		{
-			if(ignore || !Mod.IsInGame())
+			if(ignore || !(__instance is RoadsPanel) || !Mod.IsInGame())
             {
 				return;
             }
