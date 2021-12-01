@@ -31,9 +31,17 @@ namespace BetterRoadToolbar
         public void OnSettingsUI(UIHelperBase helper)
         {
             helper.AddSpace(16);
-            var extractTransportModesCheckbox = (UICheckBox)helper.AddCheckbox("Extract Bus/Tram/Bike/Trolleybus/Monorail roads into separate tabs",
+            var extractTransportModesCheckbox = (UICheckBox)helper.AddCheckbox("Create separate tabs for bus, tram, bike, trolleybus and monorail roads",
                 EditableConfig.CreateTabsForTransportModes,
                 (isChecked) => EditableConfig.Update(createTabsForTransportModes : isChecked));
+
+            var createPedestrianTabCheckbox = (UICheckBox)helper.AddCheckbox("Create a separate tab for pedestrianised and other traffic-calmed streets",
+                EditableConfig.CreatePedestrianTab,
+                (isChecked) => EditableConfig.Update(createPedestrianTab: isChecked));
+
+            var createIndustrialTabCheckbox = (UICheckBox)helper.AddCheckbox("Create a separate tab for industrial roads",
+                EditableConfig.CreateIndustrialTab,
+                (isChecked) => EditableConfig.Update(createIndustrialTab: isChecked));
 
             var useStandardSortingCheckbox = (UICheckBox)helper.AddCheckbox("Use default game sort order for roads", 
                 EditableConfig.UseStandardSortOrder,
@@ -51,6 +59,8 @@ namespace BetterRoadToolbar
                     extractTransportModesCheckbox.isChecked = true;
                     useStandardSortingCheckbox.isChecked = false;
                     ignoreCustomTabsCheckbox.isChecked = true;
+                    createIndustrialTabCheckbox.isChecked = true;
+                    createPedestrianTabCheckbox.isChecked = true;
                 });
 
             helper.AddSpace(16);

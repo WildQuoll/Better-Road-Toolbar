@@ -8,13 +8,15 @@ namespace BetterRoadToolbar
 {
 	enum RoadCategory
 	{
-		Urban_1U = 1,
+		Pedestrian = 1,
+		Urban_1U,
 		Urban_2U_2LMax,
 		Urban_2U_3LMin,
 		Urban_3U,
 		Urban_4U_4LMax,
 		Urban_4U_5LMin,
 		Urban_5UMin,
+		Industrial,
 		Rural,
 		Highway,
 
@@ -50,6 +52,8 @@ namespace BetterRoadToolbar
 		{
 			switch (cat)
 			{
+				case RoadCategory.Pedestrian:
+					return "Ped";
 				case RoadCategory.Urban_1U:
 					return "1U";
 				case RoadCategory.Urban_2U_2LMax:
@@ -64,6 +68,8 @@ namespace BetterRoadToolbar
 					return "4U 5L+";
 				case RoadCategory.Urban_5UMin:
 					return "5U+";
+				case RoadCategory.Industrial:
+					return "Ind";
 				case RoadCategory.Rural:
 					return "Rural";
 				case RoadCategory.Highway:
@@ -88,6 +94,8 @@ namespace BetterRoadToolbar
 		{
 			switch (cat)
 			{
+				case RoadCategory.Pedestrian:
+					return "Pedestrianised and traffic-calmed streets";
 				case RoadCategory.Urban_1U:
 					return "Urban, 1U wide";
 				case RoadCategory.Urban_2U_2LMax:
@@ -104,6 +112,8 @@ namespace BetterRoadToolbar
 					return "Urban, 5U wide or wider";
 				case RoadCategory.Rural:
 					return "Rural";
+				case RoadCategory.Industrial:
+					return "Industrial";
 				case RoadCategory.Highway:
 					return "Highways";
 				case RoadCategory.Bike:
@@ -201,6 +211,16 @@ namespace BetterRoadToolbar
 			return (uint)Mathf.Round(info.m_halfWidth / 4.0f);
 		}
 
+		private static bool IsPedestrianised(NetInfo info)
+        {
+			return info.m_hasPedestrianLanes && info.m_averageVehicleLaneSpeed <= 0.5f;
+        }
+
+		private static bool IsIndustrial(NetInfo info)
+        {
+			return (info.m_dlcRequired & SteamHelper.DLC_BitMask.IndustryDLC) != 0;
+        }
+
 		public static List< RoadCategory > GetRoadCategories(NetInfo info)
 		{
 			var cats = new List<RoadCategory>();
@@ -231,11 +251,23 @@ namespace BetterRoadToolbar
 				{
 					cats.Add(RoadCategory.Monorail);
 				}
+			}
 
-				if (cats.Count > 0)
-				{
-					return cats;
-				}
+			if (Mod.CurrentConfig.CreatePedestrianTab && IsPedestrianised(info))
+            {
+				cats.Add(RoadCategory.Pedestrian);
+            }
+
+			if (Mod.CurrentConfig.CreateIndustrialTab && IsIndustrial(info))
+			{
+				cats.Add(RoadCategory.Industrial);
+			}
+
+			// Roads categorised into any of the above categories should not be added
+			// to "by width" categories.
+			if (cats.Count > 0)
+			{
+				return cats;
 			}
 
 			if ((info.m_netAI as RoadBaseAI).m_highwayRules && !info.m_hasPedestrianLanes)
