@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace BetterRoadToolbar
@@ -218,7 +216,7 @@ namespace BetterRoadToolbar
 
 		private static bool IsIndustrial(NetInfo info)
         {
-			return (info.m_dlcRequired & SteamHelper.DLC_BitMask.IndustryDLC) != 0;
+			return (info.m_dlcRequired & (SteamHelper.DLC_BitMask.IndustryDLC | SteamHelper.DLC_BitMask.AirportDLC)) != 0;
         }
 
 		public static List< RoadCategory > GetRoadCategories(NetInfo info)
