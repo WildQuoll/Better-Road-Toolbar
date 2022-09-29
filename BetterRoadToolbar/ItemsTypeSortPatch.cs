@@ -54,6 +54,14 @@ namespace BetterRoadToolbar
 
         private static int Compare(NetInfo first, NetInfo second)
         {
+            bool firstIsHighway = (first.m_netAI as RoadBaseAI).m_highwayRules;
+            bool secondIsHighway = (second.m_netAI as RoadBaseAI).m_highwayRules;
+
+            if (firstIsHighway != secondIsHighway)
+            {
+                return ToComparisonInt(!firstIsHighway);
+            }
+
             float halfWidthPrecision = 0.25f;
             if (RoundToNearestMultiple(first.m_halfWidth, halfWidthPrecision) != RoundToNearestMultiple(second.m_halfWidth, halfWidthPrecision))
             {
