@@ -365,7 +365,25 @@ namespace BetterRoadToolbar
 
 		public static bool HasBusLanes(NetInfo info)
 		{
-			return (info.m_laneTypes & NetInfo.LaneType.TransportVehicle) != 0;
+			// Bus lanes which also allow, but discourage, cars.
+			if ((info.m_laneTypes & NetInfo.LaneType.TransportVehicle) != 0)
+			{
+				return true;
+			}
+
+			// Bus lanes which strictly prohibit cars
+			foreach (var lane in info.m_lanes)
+			{
+				if((lane.m_laneType & NetInfo.LaneType.Vehicle) != 0 &&
+					(lane.m_vehicleType & VehicleInfo.VehicleType.Car) != 0 &&
+					(lane.m_vehicleCategoryPart1 & VehicleInfo.VehicleCategoryPart1.Bus) != 0 &&
+					(lane.m_vehicleCategoryPart1 & VehicleInfo.VehicleCategoryPart1.PassengerCar) == 0)
+                {
+					return true;
+                }
+			}
+
+			return false;
 		}
 
 		public static bool HasDedicatedTramLanes(NetInfo info)
