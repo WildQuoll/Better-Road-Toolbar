@@ -5,6 +5,14 @@ namespace BetterRoadToolbar
 {
     public class Config
     {
+        public const string IGNORE_PLAZAS_DLC_TAB_STRING = "IgnorePlazasDlcTab";
+        public const string IGNORE_BRIDGES_DLC_TAB_STRING = "IgnoreBridgesDlcTab";
+        public const string IGNORE_OTHER_CUSTOM_TABS_STRING = "IgnoreCustomTabs";
+        public const string USE_STANDARD_SORT_ORDER_STRING = "UseStandardSortOrder";
+        public const string TREAT_SLOW_ROADS_AS_PEDESTRIAN_STRING = "CreatePedestrianTab"; // old string kept for backward compatibility
+        public const string CREATE_INDUSTRIAL_TAB_STRING = "CreateIndustrialTab";
+        public const string CREATE_TABS_BY_TRANSPORT_MODE_STRING = "CreateTabsForTransportModes";
+
         public Config()
         {
             Load(CONFIG_PATH);
@@ -37,19 +45,25 @@ namespace BetterRoadToolbar
                     }
                     switch (splitLine[0])
                     {
-                        case "UseStandardSortOrder":
+                        case USE_STANDARD_SORT_ORDER_STRING:
                             UseStandardSortOrder = FromString(splitLine[1]);
                             break;
-                        case "IgnoreCustomTabs":
-                            IgnoreCustomTabs = FromString(splitLine[1]);
+                        case IGNORE_PLAZAS_DLC_TAB_STRING:
+                            IgnorePlazasDlcTab = FromString(splitLine[1]);
                             break;
-                        case "CreateTabsForTransportModes":
+                        case IGNORE_BRIDGES_DLC_TAB_STRING:
+                            IgnoreBridgesDlcTab = FromString(splitLine[1]);
+                            break;
+                        case IGNORE_OTHER_CUSTOM_TABS_STRING:
+                            IgnoreOtherCustomTabs = FromString(splitLine[1]);
+                            break;
+                        case CREATE_TABS_BY_TRANSPORT_MODE_STRING:
                             CreateTabsForTransportModes = FromString(splitLine[1]);
                             break;
-                        case "CreatePedestrianTab":
-                            CreatePedestrianTab = FromString(splitLine[1]);
+                        case TREAT_SLOW_ROADS_AS_PEDESTRIAN_STRING:
+                            TreatSlowRoadsAsPedestrian = FromString(splitLine[1]);
                             break;
-                        case "CreateIndustrialTab":
+                        case CREATE_INDUSTRIAL_TAB_STRING:
                             CreateIndustrialTab = FromString(splitLine[1]);
                             break;
                         default:
@@ -63,11 +77,13 @@ namespace BetterRoadToolbar
 
         private void Save(string path)
         {
-            string text = "UseStandardSortOrder=" + (UseStandardSortOrder ? 1 : 0) + "\n"
-                        + "IgnoreCustomTabs=" + (IgnoreCustomTabs ? 1 : 0) + "\n"
-                        + "CreateTabsForTransportModes=" + (CreateTabsForTransportModes ? 1 : 0) + "\n"
-                        + "CreatePedestrianTab=" + (CreatePedestrianTab ? 1 : 0) + "\n"
-                        + "CreateIndustrialTab=" + (CreateIndustrialTab ? 1 : 0);
+            string text = USE_STANDARD_SORT_ORDER_STRING + "=" + (UseStandardSortOrder ? 1 : 0) + "\n"
+                        + IGNORE_PLAZAS_DLC_TAB_STRING + "=" + (IgnorePlazasDlcTab ? 1 : 0) + "\n"
+                        + IGNORE_BRIDGES_DLC_TAB_STRING + "=" + (IgnoreBridgesDlcTab ? 1 : 0) + "\n"
+                        + IGNORE_OTHER_CUSTOM_TABS_STRING + "=" + (IgnoreOtherCustomTabs ? 1 : 0) + "\n"
+                        + CREATE_TABS_BY_TRANSPORT_MODE_STRING + "=" + (CreateTabsForTransportModes ? 1 : 0) + "\n"
+                        + TREAT_SLOW_ROADS_AS_PEDESTRIAN_STRING + "=" + (TreatSlowRoadsAsPedestrian ? 1 : 0) + "\n"
+                        + CREATE_INDUSTRIAL_TAB_STRING + "=" + (CreateIndustrialTab ? 1 : 0);
 
             try
             {
@@ -80,9 +96,11 @@ namespace BetterRoadToolbar
         }
 
         public void Update(bool? useStandardSortOrder = null,
-                           bool? ignoreCustomTabs = null,
+                           bool? ignorePlazasDlcTab = null,
+                           bool? ignoreBridgesDlcTab = null,
+                           bool? ignoreOtherCustomTabs = null,
                            bool? createTabsForTransportModes = null,
-                           bool? createPedestrianTab = null,
+                           bool? treatSlowRoadsAsPedestrian = null,
                            bool? createIndustrialTab = null)
         {
             if (useStandardSortOrder.HasValue && useStandardSortOrder.Value != UseStandardSortOrder)
@@ -90,9 +108,19 @@ namespace BetterRoadToolbar
                 UseStandardSortOrder = useStandardSortOrder.Value;
             }
 
-            if (ignoreCustomTabs.HasValue && ignoreCustomTabs.Value != IgnoreCustomTabs)
+            if (ignorePlazasDlcTab.HasValue && ignorePlazasDlcTab.Value != IgnorePlazasDlcTab)
             {
-                IgnoreCustomTabs = ignoreCustomTabs.Value;
+                IgnorePlazasDlcTab = ignorePlazasDlcTab.Value;
+            }
+
+            if (ignoreBridgesDlcTab.HasValue && ignoreBridgesDlcTab.Value != IgnoreBridgesDlcTab)
+            {
+                IgnoreBridgesDlcTab = ignoreBridgesDlcTab.Value;
+            }
+
+            if (ignoreOtherCustomTabs.HasValue && ignoreOtherCustomTabs.Value != IgnoreOtherCustomTabs)
+            {
+                IgnoreOtherCustomTabs = ignoreOtherCustomTabs.Value;
             }
 
             if (createTabsForTransportModes.HasValue && createTabsForTransportModes.Value != CreateTabsForTransportModes)
@@ -100,9 +128,9 @@ namespace BetterRoadToolbar
                 CreateTabsForTransportModes = createTabsForTransportModes.Value;
             }
 
-            if (createPedestrianTab.HasValue && createPedestrianTab.Value != CreatePedestrianTab)
+            if (treatSlowRoadsAsPedestrian.HasValue && treatSlowRoadsAsPedestrian.Value != TreatSlowRoadsAsPedestrian)
             {
-                CreatePedestrianTab = createPedestrianTab.Value;
+                TreatSlowRoadsAsPedestrian = treatSlowRoadsAsPedestrian.Value;
             }
 
             if (createIndustrialTab.HasValue && createIndustrialTab.Value != CreateIndustrialTab)
@@ -116,9 +144,11 @@ namespace BetterRoadToolbar
         private const string CONFIG_PATH = "BetterRoadToolbarConfig.txt";
 
         public bool UseStandardSortOrder = false;
-        public bool IgnoreCustomTabs = true;
+        public bool IgnorePlazasDlcTab = false;
+        public bool IgnoreBridgesDlcTab = true;
+        public bool IgnoreOtherCustomTabs = true;
         public bool CreateTabsForTransportModes = true;
-        public bool CreatePedestrianTab = true;
+        public bool TreatSlowRoadsAsPedestrian = true;
         public bool CreateIndustrialTab = true;
     }
 }

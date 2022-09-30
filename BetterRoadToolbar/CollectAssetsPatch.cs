@@ -24,13 +24,13 @@ namespace BetterRoadToolbar
                 return;
             }
 
-            // Intersections, toll booths, etc. and custom modded tabs
-            var miscTabs = new List<GroupInfo>();
+            // Intersections, toll booths, etc. and custom modded tabs - we record them here to preserve the order of those that we do keep
+            var allMiscTabs = new List<GroupInfo>();
             foreach (var group in __result)
             {
                 if (!RoadUtils.IsDefaultRoadCategory(group.name))
                 {
-                    miscTabs.Add(group);
+                    allMiscTabs.Add(group);
                 }
             }
             __result.Clear();
@@ -49,7 +49,7 @@ namespace BetterRoadToolbar
                     (!toolManagerExists || info.m_availableIn.IsFlagSet(Singleton<ToolManager>.instance.m_properties.m_mode)) &&
                     info.m_placementStyle == ItemClass.Placement.Manual)
                 {
-                    if (Mod.CurrentConfig.IgnoreCustomTabs && !RoadUtils.IsDefaultRoadCategory(info.category))
+                    if (RoadUtils.ShouldKeepExistingCategory(info.category))
                     {
                         if (!miscCategoriesNeeded.Contains(info.category))
                         {
@@ -87,13 +87,14 @@ namespace BetterRoadToolbar
                 }
             }
 
-            // Re-create tabs
+            // Create our road tabs
             foreach (var cat in roadCategoriesNeeded)
             {
                 __result.Add(RoadUtils.CreateGroup(cat));
             }
 
-            foreach (var miscTab in miscTabs)
+            // Append non-empty misc tabs, in the same order in which they would normally appear
+            foreach (var miscTab in allMiscTabs)
             {
                 if (miscCategoriesNeeded.Contains(miscTab.name))
                 {

@@ -46,6 +46,9 @@ namespace BetterRoadToolbar
             };
         }
 
+        public const string BRIDGES_DLC_CATEGORY = "RoadsModderPack";
+        public const string PLAZAS_DLC_CATEGORY = "BeautificationPedestrianZoneEssentials";
+
         public static string GetToolbarTitle(RoadCategory cat)
         {
             switch (cat)
@@ -214,9 +217,27 @@ namespace BetterRoadToolbar
             return (uint)Mathf.Round(info.m_halfWidth / 4.0f);
         }
 
+        private static bool IsSlowTraffic(NetInfo info)
+        {
+            return (info.m_hasPedestrianLanes && info.m_averageVehicleLaneSpeed <= 0.5f);
+        }
+
         private static bool IsPedestrianised(NetInfo info)
         {
-            return info.m_hasPedestrianLanes && info.m_averageVehicleLaneSpeed <= 0.5f;
+            if (!info.m_hasPedestrianLanes)
+            {
+                return false;
+            }
+
+            foreach (var lane in info.m_lanes)
+            {
+                if ((lane.m_vehicleCategoryPart1 & VehicleInfo.VehicleCategoryPart1.PassengerCar) != 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public static bool IsHighway(NetInfo info)
@@ -227,6 +248,33 @@ namespace BetterRoadToolbar
         private static bool IsIndustrial(NetInfo info)
         {
             return (info.m_dlcRequired & (SteamHelper.DLC_BitMask.IndustryDLC | SteamHelper.DLC_BitMask.AirportDLC)) != 0;
+        }
+
+        public static bool ShouldKeepExistingCategory(string cat)
+        {
+            switch (cat)
+            {
+                case RoadUtils.BRIDGES_DLC_CATEGORY:
+                    if (Mod.CurrentConfig.IgnoreBridgesDlcTab)
+                    {
+                        return true;
+                    }
+                    break;
+                case RoadUtils.PLAZAS_DLC_CATEGORY:
+                    if (Mod.CurrentConfig.IgnorePlazasDlcTab)
+                    {
+                        return true;
+                    }
+                    break;
+                default:
+                    if (Mod.CurrentConfig.IgnoreOtherCustomTabs && !RoadUtils.IsDefaultRoadCategory(cat))
+                    {
+                        return true;
+                    }
+                    break;
+            }
+
+            return false;
         }
 
         public static List<RoadCategory> GetRoadCategories(NetInfo info)
@@ -268,7 +316,8 @@ namespace BetterRoadToolbar
                 return cats;
             }
 
-            if (Mod.CurrentConfig.CreatePedestrianTab && IsPedestrianised(info))
+            if (IsPedestrianised(info)
+                || (Mod.CurrentConfig.TreatSlowRoadsAsPedestrian && IsSlowTraffic(info)))
             {
                 cats.Add(RoadCategory.Pedestrian);
                 return cats;

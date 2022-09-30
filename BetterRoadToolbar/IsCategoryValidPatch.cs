@@ -22,7 +22,7 @@ namespace BetterRoadToolbar
                 return;
             }
 
-            if (Mod.CurrentConfig.IgnoreCustomTabs && !RoadUtils.IsDefaultRoadCategory(info.category))
+            if (RoadUtils.ShouldKeepExistingCategory(info.category))
             {
                 return;
             }
