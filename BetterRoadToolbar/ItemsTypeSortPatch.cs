@@ -222,10 +222,10 @@ namespace BetterRoadToolbar
         }
     }
 
-	[HarmonyPatch(typeof(GeneratedScrollPanel), "ItemsTypeSort")]
-	class ItemsTypeSortPatch
-	{
-		[HarmonyPrefix]
+    [HarmonyPatch(typeof(GeneratedScrollPanel), "ItemsTypeSort")]
+    class ItemsTypeSortPatch
+    {
+        [HarmonyPrefix]
         static bool Prefix(PrefabInfo a, PrefabInfo b, ref int __result)
         {
             if (!Mod.IsInGame())

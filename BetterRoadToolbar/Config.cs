@@ -58,7 +58,7 @@ namespace BetterRoadToolbar
                 }
             }
             catch
-            {}
+            { }
         }
 
         private void Save(string path)
@@ -80,7 +80,7 @@ namespace BetterRoadToolbar
         }
 
         public void Update(bool? useStandardSortOrder = null,
-                           bool? ignoreCustomTabs = null, 
+                           bool? ignoreCustomTabs = null,
                            bool? createTabsForTransportModes = null,
                            bool? createPedestrianTab = null,
                            bool? createIndustrialTab = null)

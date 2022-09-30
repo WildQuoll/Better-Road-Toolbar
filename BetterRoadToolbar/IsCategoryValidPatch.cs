@@ -3,44 +3,44 @@ using System;
 
 namespace BetterRoadToolbar
 {
-	// This patch overrides the category(ies) that a road will be assigned to.
-	[HarmonyPatch(typeof(GeneratedScrollPanel), "IsCategoryValid", new Type[] { typeof(NetInfo), typeof(bool) })]
-	class IsCategoryValidPatch
-	{
-		[HarmonyPostfix]
-		public static void Postfix(NetInfo info, bool ignore, GeneratedScrollPanel __instance, ref bool __result, ref string ___m_Category)
-		{
-			if(ignore || !(__instance is RoadsPanel) || !Mod.IsInGame())
+    // This patch overrides the category(ies) that a road will be assigned to.
+    [HarmonyPatch(typeof(GeneratedScrollPanel), "IsCategoryValid", new Type[] { typeof(NetInfo), typeof(bool) })]
+    class IsCategoryValidPatch
+    {
+        [HarmonyPostfix]
+        public static void Postfix(NetInfo info, bool ignore, GeneratedScrollPanel __instance, ref bool __result, ref string ___m_Category)
+        {
+            if (ignore || !(__instance is RoadsPanel) || !Mod.IsInGame())
             {
-				return;
+                return;
             }
 
-			var roadInfo = info.m_netAI as RoadBaseAI;
+            var roadInfo = info.m_netAI as RoadBaseAI;
 
-			if (!roadInfo)
+            if (!roadInfo)
             {
-				return;
+                return;
             }
 
-			if (Mod.CurrentConfig.IgnoreCustomTabs && !RoadUtils.IsDefaultRoadCategory(info.category))
-			{
-				return;
-			}
+            if (Mod.CurrentConfig.IgnoreCustomTabs && !RoadUtils.IsDefaultRoadCategory(info.category))
+            {
+                return;
+            }
 
-			var cats = RoadUtils.GetRoadCategories(info);
+            var cats = RoadUtils.GetRoadCategories(info);
 
-			foreach (var cat in cats)
-			{
-				var group = RoadUtils.CreateGroup(cat);
+            foreach (var cat in cats)
+            {
+                var group = RoadUtils.CreateGroup(cat);
 
-				if (group.name == ___m_Category)
+                if (group.name == ___m_Category)
                 {
-					__result = true;
-					return;
+                    __result = true;
+                    return;
                 }
-			}
+            }
 
-			__result = false;
-		}
-	}
+            __result = false;
+        }
+    }
 }
