@@ -62,6 +62,14 @@ namespace BetterRoadToolbar
                 return ToComparisonInt(!firstIsHighway);
             }
 
+            bool firstIsGravel = RoadUtils.IsGravel(first);
+            bool secondIsGravel = RoadUtils.IsGravel(second);
+
+            if (firstIsGravel != secondIsGravel)
+            {
+                return ToComparisonInt(firstIsGravel);
+            }
+
             if (firstIsHighway)
             {
                 // When sorting highways, one-way roads always before two-way

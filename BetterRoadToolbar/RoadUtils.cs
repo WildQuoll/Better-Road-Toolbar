@@ -240,6 +240,11 @@ namespace BetterRoadToolbar
             return true;
         }
 
+        public static bool IsGravel(NetInfo info)
+        {
+            return (info.m_setVehicleFlags & Vehicle.Flags.OnGravel) != 0;
+        }
+
         public static bool IsHighway(NetInfo info)
         {
             return (info.m_netAI as RoadBaseAI).m_highwayRules && !info.m_hasPedestrianLanes;
