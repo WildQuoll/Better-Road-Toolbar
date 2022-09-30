@@ -261,20 +261,22 @@ namespace BetterRoadToolbar
 				}
 			}
 
-			if (Mod.CurrentConfig.CreatePedestrianTab && IsPedestrianised(info))
-            {
-				cats.Add(RoadCategory.Pedestrian);
-            }
-
-			if (Mod.CurrentConfig.CreateIndustrialTab && IsIndustrial(info))
-			{
-				cats.Add(RoadCategory.Industrial);
-			}
-
 			// Roads categorised into any of the above categories should not be added
 			// to "by width" categories.
 			if (cats.Count > 0)
 			{
+				return cats;
+			}
+
+			if (Mod.CurrentConfig.CreatePedestrianTab && IsPedestrianised(info))
+			{
+				cats.Add(RoadCategory.Pedestrian);
+				return cats;
+			}
+
+			if (Mod.CurrentConfig.CreateIndustrialTab && IsIndustrial(info))
+			{
+				cats.Add(RoadCategory.Industrial);
 				return cats;
 			}
 
