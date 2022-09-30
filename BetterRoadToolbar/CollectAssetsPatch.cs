@@ -77,8 +77,9 @@ namespace BetterRoadToolbar
             for (uint i = 0u; i < PrefabCollection<BuildingInfo>.LoadedCount(); ++i)
             {
                 BuildingInfo info = PrefabCollection<BuildingInfo>.GetLoaded(i);
-                // We could check manual placement and all that, but it seems unnecessary
-                if (info != null && info.GetService() == ItemClass.Service.Road)
+                if (info != null && 
+                    info.GetService() == ItemClass.Service.Road && 
+                    info.m_placementStyle == ItemClass.Placement.Manual)
                 {
                     if (!miscCategoriesNeeded.Contains(info.category))
                     {
