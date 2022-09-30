@@ -54,12 +54,24 @@ namespace BetterRoadToolbar
 
         private static int Compare(NetInfo first, NetInfo second)
         {
-            bool firstIsHighway = (first.m_netAI as RoadBaseAI).m_highwayRules;
-            bool secondIsHighway = (second.m_netAI as RoadBaseAI).m_highwayRules;
+            bool firstIsHighway = RoadUtils.IsHighway(first);
+            bool secondIsHighway = RoadUtils.IsHighway(second);
 
             if (firstIsHighway != secondIsHighway)
             {
                 return ToComparisonInt(!firstIsHighway);
+            }
+
+            if (firstIsHighway)
+            {
+                // When sorting highways, one-way roads always before two-way
+                bool firstIsTwoWay = RoadUtils.AllowsTwoWayVehicleTraffic(first);
+                bool secondIsTwoWay = RoadUtils.AllowsTwoWayVehicleTraffic(second);
+
+                if (firstIsTwoWay != secondIsTwoWay)
+                {
+                    return ToComparisonInt(secondIsTwoWay);
+                }
             }
 
             float halfWidthPrecision = 0.25f;

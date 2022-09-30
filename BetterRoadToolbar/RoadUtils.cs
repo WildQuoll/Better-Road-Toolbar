@@ -154,6 +154,11 @@ namespace BetterRoadToolbar
 			return false;
 		}
 
+		public static bool AllowsTwoWayVehicleTraffic(NetInfo info)
+		{
+			return info.m_backwardVehicleLaneCount > 0 && info.m_forwardVehicleLaneCount > 0;
+		}
+
 		public static uint GetLaneCount(NetInfo info)
 		{
 			uint count = 0;
@@ -214,6 +219,11 @@ namespace BetterRoadToolbar
 			return info.m_hasPedestrianLanes && info.m_averageVehicleLaneSpeed <= 0.5f;
         }
 
+		public static bool IsHighway(NetInfo info)
+        {
+			return (info.m_netAI as RoadBaseAI).m_highwayRules && !info.m_hasPedestrianLanes;
+		}
+
 		private static bool IsIndustrial(NetInfo info)
         {
 			return (info.m_dlcRequired & (SteamHelper.DLC_BitMask.IndustryDLC | SteamHelper.DLC_BitMask.AirportDLC)) != 0;
@@ -268,7 +278,7 @@ namespace BetterRoadToolbar
 				return cats;
 			}
 
-			if ((info.m_netAI as RoadBaseAI).m_highwayRules && !info.m_hasPedestrianLanes)
+			if (IsHighway(info))
 			{
 				cats.Add( RoadCategory.Highway);
 				return cats;
