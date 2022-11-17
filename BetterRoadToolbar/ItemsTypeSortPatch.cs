@@ -80,29 +80,44 @@ namespace BetterRoadToolbar
                 {
                     return ToComparisonInt(secondIsTwoWay);
                 }
+
+                // For highways, lane count check ahead of road footprint and median check
+                uint firstLaneCount = RoadUtils.GetVehicleLaneCount(first);
+                uint secondLaneCount = RoadUtils.GetVehicleLaneCount(second);
+
+                if (firstLaneCount != secondLaneCount)
+                {
+                    return ToComparisonInt(firstLaneCount < secondLaneCount);
+                }
             }
 
-            float halfWidthPrecision = 0.25f;
-            if (RoundToNearestMultiple(first.m_halfWidth, halfWidthPrecision) != RoundToNearestMultiple(second.m_halfWidth, halfWidthPrecision))
+            uint firstCellWidth = RoadUtils.GetCellWidth(first);
+            uint secondCellWidth = RoadUtils.GetCellWidth(second);
+
+            if (firstCellWidth != secondCellWidth)
             {
-                return ToComparisonInt(first.m_halfWidth < second.m_halfWidth);
+                return ToComparisonInt(firstCellWidth < secondCellWidth);
             }
 
-            float firstRoadwayWidth = RoadUtils.GetEffectiveRoadwayWidth(first);
-            float secondRoadwayWidth = RoadUtils.GetEffectiveRoadwayWidth(second);
+            bool firstHasMedian = RoadUtils.HasMedian(first);
+            bool secondHasMedian = RoadUtils.HasMedian(second);
 
-            float roadwayWidthPrecision = 0.5f;
-            if (RoundToNearestMultiple(firstRoadwayWidth, roadwayWidthPrecision) != RoundToNearestMultiple(secondRoadwayWidth, roadwayWidthPrecision))
+            if (firstHasMedian != secondHasMedian)
             {
-                return ToComparisonInt(firstRoadwayWidth < secondRoadwayWidth); // narrower road before wider road
+                return ToComparisonInt(secondHasMedian); // roads without median before those with median
             }
 
-            uint firstLaneCount = RoadUtils.GetLaneCount(first);
-            uint secondLaneCount = RoadUtils.GetLaneCount(second);
 
-            if (firstLaneCount != secondLaneCount)
+            if (!firstIsHighway)
             {
-                return ToComparisonInt(firstLaneCount < secondLaneCount);
+                // Already checked for highways
+                uint firstLaneCount = RoadUtils.GetVehicleLaneCount(first);
+                uint secondLaneCount = RoadUtils.GetVehicleLaneCount(second);
+
+                if (firstLaneCount != secondLaneCount)
+                {
+                    return ToComparisonInt(firstLaneCount < secondLaneCount);
+                }
             }
 
             uint firstDirLaneCount = RoadUtils.GetHighestLaneCountPerDirection(first);
@@ -159,6 +174,25 @@ namespace BetterRoadToolbar
             if (firstHasBikeLanes != secondHasBikeLanes)
             {
                 return ToComparisonInt(secondHasBikeLanes);
+            }
+
+            uint firstCarLaneCount = RoadUtils.GetCarLaneCount(first);
+            uint secondCarLaneCount = RoadUtils.GetCarLaneCount(second);
+
+            if (firstCarLaneCount != secondCarLaneCount)
+            {
+                // Given two roads with the same overall number of lanes, and some dedicated lanes of the same type:
+                // road with more dedicated lanes ahead of one with fewer
+                return ToComparisonInt(firstCarLaneCount < secondCarLaneCount);
+            }
+
+            float firstRoadwayWidth = RoadUtils.GetEffectiveRoadwayWidth(first);
+            float secondRoadwayWidth = RoadUtils.GetEffectiveRoadwayWidth(second);
+
+            float roadwayWidthPrecision = 0.5f;
+            if (RoundToNearestMultiple(firstRoadwayWidth, roadwayWidthPrecision) != RoundToNearestMultiple(secondRoadwayWidth, roadwayWidthPrecision))
+            {
+                return ToComparisonInt(firstRoadwayWidth < secondRoadwayWidth); // narrower road before wider road
             }
 
             float firstNoise = (first.m_netAI as RoadBaseAI).m_noiseAccumulation;

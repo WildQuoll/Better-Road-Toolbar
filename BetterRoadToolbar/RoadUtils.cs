@@ -142,9 +142,25 @@ namespace BetterRoadToolbar
         {
             var laneTypes = (NetInfo.LaneType.Vehicle | NetInfo.LaneType.TransportVehicle);
             var vehicleTypes = (VehicleInfo.VehicleType.Car | VehicleInfo.VehicleType.Tram | VehicleInfo.VehicleType.Trolleybus);
+            var vehicleCategories = (VehicleInfo.VehicleCategoryPart1.PassengerCar |
+                VehicleInfo.VehicleCategoryPart1.Bus |
+                VehicleInfo.VehicleCategoryPart1.Trolleybus |
+                VehicleInfo.VehicleCategoryPart1.Tram | VehicleInfo.VehicleCategoryPart1.CargoTruck | VehicleInfo.VehicleCategoryPart1.Taxi);
 
             return (lane.m_laneType & laneTypes) != 0 &&
-                   (lane.m_vehicleType & vehicleTypes) != 0;
+                   (lane.m_vehicleType & vehicleTypes) != 0 &&
+                   (lane.m_vehicleCategoryPart1 & vehicleCategories) != 0;
+        }
+
+        private static bool IsCarLane(NetInfo.Lane lane)
+        {
+            var laneType = NetInfo.LaneType.Vehicle;
+            var vehicleType = VehicleInfo.VehicleType.Car;
+            var vehicleCategory = VehicleInfo.VehicleCategoryPart1.PassengerCar;
+
+            return (lane.m_laneType & laneType) != 0 &&
+                   (lane.m_vehicleType & vehicleType) != 0 &&
+                   (lane.m_vehicleCategoryPart1 & vehicleCategory) != 0;
         }
 
         private static bool IsAuxiliaryLane(NetInfo.Lane lane)
@@ -162,7 +178,27 @@ namespace BetterRoadToolbar
             return info.m_backwardVehicleLaneCount > 0 && info.m_forwardVehicleLaneCount > 0;
         }
 
-        public static uint GetLaneCount(NetInfo info)
+        /// Counts car lanes. A car lane is a lane that allows "normal" cars on it.
+        public static uint GetCarLaneCount(NetInfo info)
+        {
+            uint count = 0;
+
+            foreach (var lane in info.m_lanes)
+            {
+                if (IsCarLane(lane))
+                {
+                    count += 1;
+                }
+            }
+
+            return count;
+        }
+
+        ///
+        /// Counts vehicle lanes. A vehicle lane is a lane that allows some or all "car-sized" (cars, buses, trams, etc.) vehicles on it.
+        /// Bicycle lanes are not a vehicle lanes. Lanes restricted to emergency vehicles are also not counted.
+        /// 
+        public static uint GetVehicleLaneCount(NetInfo info)
         {
             uint count = 0;
 
@@ -179,10 +215,10 @@ namespace BetterRoadToolbar
 
         public static uint GetHighestLaneCountPerDirection(NetInfo info)
         {
-            return Math.Max(GetLaneCount(info, NetInfo.Direction.Forward), GetLaneCount(info, NetInfo.Direction.Backward));
+            return Math.Max(GetVehicleLaneCount(info, NetInfo.Direction.Forward), GetVehicleLaneCount(info, NetInfo.Direction.Backward));
         }
 
-        public static uint GetLaneCount(NetInfo info, NetInfo.Direction direction)
+        public static uint GetVehicleLaneCount(NetInfo info, NetInfo.Direction direction)
         {
             uint count = 0;
 
@@ -212,7 +248,7 @@ namespace BetterRoadToolbar
             return count;
         }
 
-        private static uint GetCellWidth(NetInfo info)
+        public static uint GetCellWidth(NetInfo info)
         {
             return (uint)Mathf.Round(info.m_halfWidth / 4.0f);
         }
@@ -346,7 +382,7 @@ namespace BetterRoadToolbar
                 return cats;
             }
 
-            uint laneCount = GetLaneCount(info);
+            uint laneCount = GetVehicleLaneCount(info);
             uint cellWidth = GetCellWidth(info);
 
             switch (cellWidth)
@@ -390,6 +426,41 @@ namespace BetterRoadToolbar
             public float max;
         }
 
+        public static bool HasMedian(NetInfo info)
+        {
+            float min = float.MinValue;
+            float max = float.MaxValue;
+
+            foreach (var lane in info.m_lanes)
+            {
+                if (IsVehicleLane(lane))
+                {
+                    float halfWidth = lane.m_width / 2.0f;
+
+                    if (lane.m_position < 0.0f)
+                    {
+                        min = Math.Max(min, lane.m_position + halfWidth);
+                    }
+                    else
+                    {
+                        max = Math.Min(max, lane.m_position - halfWidth);
+                    }
+                }
+            }
+
+            if (min >= 0.0f || max <= 0.0f)
+            {
+                return false;
+            }
+
+            float threshold = 1.5f;
+            return max - min >= threshold;
+        }
+
+        /// <summary>
+        /// Returns the "effective" roadway width. This is the distance between the centres of the two outermost lanes used by moving traffic.
+        /// Parking lanes, bicycle lanes and "emergency" lanes are ignored.
+        /// </summary>
         public static float GetEffectiveRoadwayWidth(NetInfo info)
         {
             float min = float.MaxValue;
