@@ -288,7 +288,7 @@ namespace BetterRoadToolbar
 
         private static bool IsIndustrial(NetInfo info)
         {
-            return (info.m_dlcRequired & (SteamHelper.DLC_BitMask.IndustryDLC | SteamHelper.DLC_BitMask.AirportDLC)) != 0;
+            return (info.m_requiredExpansion & (SteamHelper.ExpansionBitMask.Industry | SteamHelper.ExpansionBitMask.Airport)) != 0;
         }
 
         public static bool ShouldKeepExistingCategory(string cat)
