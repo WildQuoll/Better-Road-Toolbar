@@ -12,6 +12,7 @@ namespace BetterRoadToolbar
         public const string TREAT_SLOW_ROADS_AS_PEDESTRIAN_STRING = "CreatePedestrianTab"; // old string kept for backward compatibility
         public const string CREATE_INDUSTRIAL_TAB_STRING = "CreateIndustrialTab";
         public const string CREATE_TABS_BY_TRANSPORT_MODE_STRING = "CreateTabsForTransportModes";
+        public const string CREATE_MULTI_MODAL_TAB_STRING = "CreateMultiModalTab";
 
         public Config()
         {
@@ -60,6 +61,9 @@ namespace BetterRoadToolbar
                         case CREATE_TABS_BY_TRANSPORT_MODE_STRING:
                             CreateTabsForTransportModes = FromString(splitLine[1]);
                             break;
+                        case CREATE_MULTI_MODAL_TAB_STRING:
+                            CreateMultiModalTab = FromString(splitLine[1]);
+                            break;
                         case TREAT_SLOW_ROADS_AS_PEDESTRIAN_STRING:
                             TreatSlowRoadsAsPedestrian = FromString(splitLine[1]);
                             break;
@@ -82,6 +86,7 @@ namespace BetterRoadToolbar
                         + IGNORE_BRIDGES_DLC_TAB_STRING + "=" + (IgnoreBridgesDlcTab ? 1 : 0) + "\n"
                         + IGNORE_OTHER_CUSTOM_TABS_STRING + "=" + (IgnoreOtherCustomTabs ? 1 : 0) + "\n"
                         + CREATE_TABS_BY_TRANSPORT_MODE_STRING + "=" + (CreateTabsForTransportModes ? 1 : 0) + "\n"
+                        + CREATE_MULTI_MODAL_TAB_STRING + "=" + (CreateMultiModalTab ? 1 : 0) + "\n"
                         + TREAT_SLOW_ROADS_AS_PEDESTRIAN_STRING + "=" + (TreatSlowRoadsAsPedestrian ? 1 : 0) + "\n"
                         + CREATE_INDUSTRIAL_TAB_STRING + "=" + (CreateIndustrialTab ? 1 : 0);
 
@@ -100,6 +105,7 @@ namespace BetterRoadToolbar
                            bool? ignoreBridgesDlcTab = null,
                            bool? ignoreOtherCustomTabs = null,
                            bool? createTabsForTransportModes = null,
+                           bool? createMultiModalTab = null,
                            bool? treatSlowRoadsAsPedestrian = null,
                            bool? createIndustrialTab = null)
         {
@@ -128,6 +134,11 @@ namespace BetterRoadToolbar
                 CreateTabsForTransportModes = createTabsForTransportModes.Value;
             }
 
+            if (createMultiModalTab.HasValue && createMultiModalTab.Value != CreateMultiModalTab)
+            {
+                CreateMultiModalTab = createMultiModalTab.Value;
+            }
+
             if (treatSlowRoadsAsPedestrian.HasValue && treatSlowRoadsAsPedestrian.Value != TreatSlowRoadsAsPedestrian)
             {
                 TreatSlowRoadsAsPedestrian = treatSlowRoadsAsPedestrian.Value;
@@ -148,6 +159,7 @@ namespace BetterRoadToolbar
         public bool IgnoreBridgesDlcTab = true;
         public bool IgnoreOtherCustomTabs = true;
         public bool CreateTabsForTransportModes = true;
+        public bool CreateMultiModalTab = false;
         public bool TreatSlowRoadsAsPedestrian = true;
         public bool CreateIndustrialTab = true;
     }

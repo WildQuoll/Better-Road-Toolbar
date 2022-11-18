@@ -35,6 +35,12 @@ namespace BetterRoadToolbar
                 EditableConfig.CreateTabsForTransportModes,
                 (isChecked) => EditableConfig.Update(createTabsForTransportModes: isChecked));
 
+            var extractMultiModalCheckbox = (UICheckBox)helper.AddCheckbox("Create an additional tab for roads with 2 or more modes of transport",
+                EditableConfig.CreateMultiModalTab,
+                (isChecked) => EditableConfig.Update(createMultiModalTab: isChecked));
+
+            helper.AddSpace(16);
+
             var createIndustrialTabCheckbox = (UICheckBox)helper.AddCheckbox("Create a separate tab for industrial roads",
                 EditableConfig.CreateIndustrialTab,
                 (isChecked) => EditableConfig.Update(createIndustrialTab: isChecked));
@@ -46,6 +52,8 @@ namespace BetterRoadToolbar
             var useStandardSortingCheckbox = (UICheckBox)helper.AddCheckbox("Use default game sort order for roads",
                 EditableConfig.UseStandardSortOrder,
                 (isChecked) => EditableConfig.Update(useStandardSortOrder: isChecked));
+
+            helper.AddSpace(16);
 
             var ignorePlazasDlcTabCheckbox = (UICheckBox)helper.AddCheckbox("Keep Plazas and Promenades DLC roads in their own tab",
                 EditableConfig.IgnorePlazasDlcTab,
@@ -65,6 +73,7 @@ namespace BetterRoadToolbar
                 {
                     // This not only updates the config, but also updates the checkboxes.
                     extractTransportModesCheckbox.isChecked = true;
+                    extractMultiModalCheckbox.isChecked = false;
                     useStandardSortingCheckbox.isChecked = false;
                     ignorePlazasDlcTabCheckbox.isChecked = false;
                     ignoreBridgesDlcTabCheckbox.isChecked = true;

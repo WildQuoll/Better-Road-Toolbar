@@ -22,7 +22,8 @@ namespace BetterRoadToolbar
         Bus,
         Tram,
         Trolleybus,
-        Monorail
+        Monorail,
+        MultiModal
     }
 
     static class RoadUtils
@@ -85,6 +86,8 @@ namespace BetterRoadToolbar
                     return "Tram";
                 case RoadCategory.Monorail:
                     return "Mono";
+                case RoadCategory.MultiModal:
+                    return "Mix";
                 default:
                     break;
             }
@@ -127,6 +130,8 @@ namespace BetterRoadToolbar
                     return "Tram roads";
                 case RoadCategory.Monorail:
                     return "Monorail roads";
+                case RoadCategory.MultiModal:
+                    return "Multi-modal roads";
                 default:
                     break;
             }
@@ -348,6 +353,13 @@ namespace BetterRoadToolbar
                 {
                     cats.Add(RoadCategory.Monorail);
                 }
+            }
+
+            if (cats.Count > 1 && Mod.CurrentConfig.CreateMultiModalTab)
+            {
+                cats.Clear();
+                cats.Add(RoadCategory.MultiModal);
+                return cats;
             }
 
             // Roads categorised into any of the above categories should not be added
