@@ -3,6 +3,7 @@ using System;
 
 namespace BetterRoadToolbar
 {
+    
     // This patch overrides the category(ies) that a road will be assigned to.
     [HarmonyPatch(typeof(GeneratedScrollPanel), "IsCategoryValid", new Type[] { typeof(NetInfo), typeof(bool) })]
     class IsCategoryValidPatch

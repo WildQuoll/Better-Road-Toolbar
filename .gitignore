@@ -1,0 +1,4 @@
+﻿packages*
+*.suo
+.vs
+*.sln

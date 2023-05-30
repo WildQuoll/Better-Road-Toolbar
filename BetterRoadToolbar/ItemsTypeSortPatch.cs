@@ -247,7 +247,7 @@ namespace BetterRoadToolbar
                 return 0;
             }
 
-            if (Mod.CurrentConfig.UseStandardSortOrder)
+            if (Mod.CurrentConfig.UseDefaultSortOrder)
             {
                 int result = a.m_isCustomContent.CompareTo(b.m_isCustomContent);
 

@@ -47,7 +47,7 @@ namespace BetterRoadToolbar
                     switch (splitLine[0])
                     {
                         case USE_STANDARD_SORT_ORDER_STRING:
-                            UseStandardSortOrder = FromString(splitLine[1]);
+                            UseDefaultSortOrder = FromString(splitLine[1]);
                             break;
                         case IGNORE_PLAZAS_DLC_TAB_STRING:
                             IgnorePlazasDlcTab = FromString(splitLine[1]);
@@ -81,7 +81,7 @@ namespace BetterRoadToolbar
 
         private void Save(string path)
         {
-            string text = USE_STANDARD_SORT_ORDER_STRING + "=" + (UseStandardSortOrder ? 1 : 0) + "\n"
+            string text = USE_STANDARD_SORT_ORDER_STRING + "=" + (UseDefaultSortOrder ? 1 : 0) + "\n"
                         + IGNORE_PLAZAS_DLC_TAB_STRING + "=" + (IgnorePlazasDlcTab ? 1 : 0) + "\n"
                         + IGNORE_BRIDGES_DLC_TAB_STRING + "=" + (IgnoreBridgesDlcTab ? 1 : 0) + "\n"
                         + IGNORE_OTHER_CUSTOM_TABS_STRING + "=" + (IgnoreOtherCustomTabs ? 1 : 0) + "\n"
@@ -100,7 +100,7 @@ namespace BetterRoadToolbar
             }
         }
 
-        public void Update(bool? useStandardSortOrder = null,
+        public void Update(bool? useDefaultSortOrder = null,
                            bool? ignorePlazasDlcTab = null,
                            bool? ignoreBridgesDlcTab = null,
                            bool? ignoreOtherCustomTabs = null,
@@ -109,9 +109,9 @@ namespace BetterRoadToolbar
                            bool? treatSlowRoadsAsPedestrian = null,
                            bool? createIndustrialTab = null)
         {
-            if (useStandardSortOrder.HasValue && useStandardSortOrder.Value != UseStandardSortOrder)
+            if (useDefaultSortOrder.HasValue && useDefaultSortOrder.Value != UseDefaultSortOrder)
             {
-                UseStandardSortOrder = useStandardSortOrder.Value;
+                UseDefaultSortOrder = useDefaultSortOrder.Value;
             }
 
             if (ignorePlazasDlcTab.HasValue && ignorePlazasDlcTab.Value != IgnorePlazasDlcTab)
@@ -154,7 +154,7 @@ namespace BetterRoadToolbar
 
         private const string CONFIG_PATH = "BetterRoadToolbarConfig.txt";
 
-        public bool UseStandardSortOrder = false;
+        public bool UseDefaultSortOrder = false;
         public bool IgnorePlazasDlcTab = false;
         public bool IgnoreBridgesDlcTab = true;
         public bool IgnoreOtherCustomTabs = true;

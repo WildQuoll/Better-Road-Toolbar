@@ -10,7 +10,7 @@ namespace BetterRoadToolbar
     //
     // Alternatively could patch GeneratedGroupPanel.SpawnButtonEntry, but NExt2 redirects that method, so that wouldn't always work.
     [HarmonyPatch(typeof(GeneratedGroupPanel), "PopulateGroups", new Type[] { typeof(GroupFilter), typeof(Comparison<GroupInfo>) })]
-    class SpawnButtonEntryPatch
+    class PopulateGroupsPatch
     {
         [HarmonyPostfix]
         public static void Postfix(GroupFilter filter, Comparison<GroupInfo> comparison, GeneratedGroupPanel __instance, UITabstrip ___m_Strip)

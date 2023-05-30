@@ -50,8 +50,8 @@ namespace BetterRoadToolbar
                 (isChecked) => EditableConfig.Update(treatSlowRoadsAsPedestrian: isChecked));
 
             var useStandardSortingCheckbox = (UICheckBox)helper.AddCheckbox("Use default game sort order for roads",
-                EditableConfig.UseStandardSortOrder,
-                (isChecked) => EditableConfig.Update(useStandardSortOrder: isChecked));
+                EditableConfig.UseDefaultSortOrder,
+                (isChecked) => EditableConfig.Update(useDefaultSortOrder: isChecked));
 
             helper.AddSpace(16);
 
