@@ -37,19 +37,6 @@ namespace BetterRoadToolbar
             }
         }
 
-        public static string GetTabTile(RoadCategory cat)
-        {
-            string language = SingletonLite<LocaleManager>.instance.language;
-            if (TabTitles[cat].ContainsKey(language))
-            {
-                return TabTitles[cat][language];
-            }
-            else
-            {
-                return TabTitles[cat]["en"];
-            }
-        }
-
         public static string GetTabTitle(RoadCategory cat)
         {
             string language = SingletonLite<LocaleManager>.instance.language;
