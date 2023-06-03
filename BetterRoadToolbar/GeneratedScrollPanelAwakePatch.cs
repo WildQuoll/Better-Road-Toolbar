@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using Epic.OnlineServices.Ecom;
 using HarmonyLib;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -26,11 +27,11 @@ namespace BetterRoadToolbar
 
                 if (button.normalFgSprite == "UIFilterRoadsOneLane")
                 {
-                    button.tooltip = "Roads without parking";
+                    button.tooltip = Translations.GetString(Translations.FILTER_WITHOUT_PARKING);
                 }
                 else if (button.normalFgSprite == "UIFilterRoadsTwoLane")
                 {
-                    button.tooltip = "Roads with parking";
+                    button.tooltip = Translations.GetString(Translations.FILTER_WITH_PARKING);
 
                     string replacementIcon = "UIFilterRoadsNotDecorated";
                     button.foregroundSprites[0].normal = replacementIcon;

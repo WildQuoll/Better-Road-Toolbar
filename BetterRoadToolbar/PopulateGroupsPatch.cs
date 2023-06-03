@@ -55,8 +55,8 @@ namespace BetterRoadToolbar
                         return;
                     }
 
-                    button.tooltip = RoadUtils.GetTooltip(cat);
-                    button.text = RoadUtils.GetToolbarTitle(cat);
+                    button.tooltip = Translations.GetTabTooltip(cat);
+                    button.text = Translations.GetTabTitle(cat);
                 }
             }
         }
