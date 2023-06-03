@@ -73,8 +73,8 @@ namespace BetterRoadToolbar
             if (firstIsHighway)
             {
                 // When sorting highways, one-way roads always before two-way
-                bool firstIsTwoWay = RoadUtils.AllowsTwoWayVehicleTraffic(first);
-                bool secondIsTwoWay = RoadUtils.AllowsTwoWayVehicleTraffic(second);
+                bool firstIsTwoWay = RoadUtils.IsTwoWayRoad(first);
+                bool secondIsTwoWay = RoadUtils.IsTwoWayRoad(second);
 
                 if (firstIsTwoWay != secondIsTwoWay)
                 {

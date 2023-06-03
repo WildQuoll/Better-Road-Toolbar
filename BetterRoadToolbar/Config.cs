@@ -13,6 +13,7 @@ namespace BetterRoadToolbar
         public const string CREATE_INDUSTRIAL_TAB_STRING = "CreateIndustrialTab";
         public const string CREATE_TABS_BY_TRANSPORT_MODE_STRING = "CreateTabsForTransportModes";
         public const string CREATE_MULTI_MODAL_TAB_STRING = "CreateMultiModalTab";
+        public const string SHOW_ASSET_FILTERS_STRING = "ShowAssetFilters";
 
         public Config()
         {
@@ -70,6 +71,9 @@ namespace BetterRoadToolbar
                         case CREATE_INDUSTRIAL_TAB_STRING:
                             CreateIndustrialTab = FromString(splitLine[1]);
                             break;
+                        case SHOW_ASSET_FILTERS_STRING:
+                            ShowAssetFilters = FromString(splitLine[1]);
+                            break;
                         default:
                             break;
                     }
@@ -88,7 +92,8 @@ namespace BetterRoadToolbar
                         + CREATE_TABS_BY_TRANSPORT_MODE_STRING + "=" + (CreateTabsForTransportModes ? 1 : 0) + "\n"
                         + CREATE_MULTI_MODAL_TAB_STRING + "=" + (CreateMultiModalTab ? 1 : 0) + "\n"
                         + TREAT_SLOW_ROADS_AS_PEDESTRIAN_STRING + "=" + (TreatSlowRoadsAsPedestrian ? 1 : 0) + "\n"
-                        + CREATE_INDUSTRIAL_TAB_STRING + "=" + (CreateIndustrialTab ? 1 : 0);
+                        + CREATE_INDUSTRIAL_TAB_STRING + "=" + (CreateIndustrialTab ? 1 : 0) + "\n"
+                        + SHOW_ASSET_FILTERS_STRING + "=" + (ShowAssetFilters ? 1 : 0);
 
             try
             {
@@ -107,7 +112,8 @@ namespace BetterRoadToolbar
                            bool? createTabsForTransportModes = null,
                            bool? createMultiModalTab = null,
                            bool? treatSlowRoadsAsPedestrian = null,
-                           bool? createIndustrialTab = null)
+                           bool? createIndustrialTab = null,
+                           bool? showAssetFilters = null)
         {
             if (useDefaultSortOrder.HasValue && useDefaultSortOrder.Value != UseDefaultSortOrder)
             {
@@ -149,6 +155,11 @@ namespace BetterRoadToolbar
                 CreateIndustrialTab = createIndustrialTab.Value;
             }
 
+            if (showAssetFilters.HasValue && showAssetFilters.Value != ShowAssetFilters)
+            {
+                ShowAssetFilters = showAssetFilters.Value;
+            }
+
             Save(CONFIG_PATH);
         }
 
@@ -162,5 +173,6 @@ namespace BetterRoadToolbar
         public bool CreateMultiModalTab = false;
         public bool TreatSlowRoadsAsPedestrian = true;
         public bool CreateIndustrialTab = true;
+        public bool ShowAssetFilters = true;
     }
 }

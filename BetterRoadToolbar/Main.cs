@@ -68,6 +68,12 @@ namespace BetterRoadToolbar
                 (isChecked) => EditableConfig.Update(ignoreOtherCustomTabs: isChecked));
 
             helper.AddSpace(16);
+
+            var showAssetFiltersCheckbox = (UICheckBox)helper.AddCheckbox("Show road filters (e.g. 1-way/2-way) in each tab",
+                EditableConfig.ShowAssetFilters,
+                (isChecked) => EditableConfig.Update(showAssetFilters: isChecked));
+
+            helper.AddSpace(16);
             helper.AddButton("Reset to default",
                 () =>
                 {
@@ -80,6 +86,7 @@ namespace BetterRoadToolbar
                     ignoreOtherCustomTabsCheckbox.isChecked = true;
                     createIndustrialTabCheckbox.isChecked = true;
                     treatSlowRoadsAsPedestrianCheckbox.isChecked = true;
+                    showAssetFiltersCheckbox.isChecked = true;
                 });
 
             helper.AddSpace(16);

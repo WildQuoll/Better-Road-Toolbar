@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 namespace BetterRoadToolbar
@@ -178,9 +179,16 @@ namespace BetterRoadToolbar
             return false;
         }
 
-        public static bool AllowsTwoWayVehicleTraffic(NetInfo info)
+        public static bool IsTwoWayRoad(NetInfo info)
         {
-            return info.m_backwardVehicleLaneCount > 0 && info.m_forwardVehicleLaneCount > 0;
+            if(info.m_backwardVehicleLaneCount > 0 && info.m_forwardVehicleLaneCount > 0)
+            {
+                // This could be a car lane with bike contraflow -> which we interpret as one-way
+                return GetVehicleLaneCount(info, NetInfo.Direction.Forward) > 0 && 
+                       GetVehicleLaneCount(info, NetInfo.Direction.Backward) > 0; 
+            }
+
+            return false;
         }
 
         /// Counts car lanes. A car lane is a lane that allows "normal" cars on it.
@@ -321,6 +329,11 @@ namespace BetterRoadToolbar
             }
 
             return false;
+        }
+
+        public static bool ContainsAnyPublicTransportInfrastructure(NetInfo info)
+        {
+            return HasBusLanes(info) || HasTramTracks(info) || HasTrolleybusWires(info) || HasMonorail(info);
         }
 
         public static List<RoadCategory> GetRoadCategories(NetInfo info)
@@ -551,6 +564,49 @@ namespace BetterRoadToolbar
         public static bool HasMonorail(NetInfo info)
         {
             return (info.m_vehicleTypes & VehicleInfo.VehicleType.Monorail) != 0;
+        }
+
+        public static bool ContainsTrees(NetInfo info)
+        {
+            foreach (var lane in info.m_lanes)
+            {
+                if(lane.m_laneProps != null && lane.m_laneProps.m_props != null)
+                {
+                    foreach(var prop in lane.m_laneProps.m_props)
+                    {
+                        if (prop != null && prop.m_tree != null)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IsDecorated(NetInfo info)
+        {
+            // Vanilla check: name based
+            if (info.HasDecoration())
+            {
+                return true;
+            }
+
+            // Check for actual tree props
+            if (RoadUtils.ContainsTrees(info))
+            {
+                return true;
+            }
+
+            // Check for grass
+            var tooltip = info.GetLocalizedTooltip().ToLower();
+            if (tooltip.Contains(" grass"))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
